@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "queue_entry")
+@Table(name = "reservation")
 public class Reservation {
 
     @Id
@@ -17,14 +17,15 @@ public class Reservation {
     @Column(name = "phone_number", nullable = false, length = 20)
     private String phoneNumber;
 
-    // DB-type er queue_status, men vi bruker String (ingen enum)
-    @Column(nullable = false, columnDefinition = "queue_status")
+    // Anbefalt: hold det som VARCHAR i DB for å unngå mapping-trøbbel
+    @Column(nullable = false, length = 30)
     private String status;
 
-    @Column(name = "game_id", nullable = false)
-    private Long gameId;
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "game_id", nullable = false)
+    private Game game;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
     @Column(name = "started_at")
@@ -45,7 +46,7 @@ public class Reservation {
     public String getName() { return name; }
     public String getPhoneNumber() { return phoneNumber; }
     public String getStatus() { return status; }
-    public Long getGameId() { return gameId; }
+    public Game getGame() { return game; }
     public OffsetDateTime getCreatedAt() { return createdAt; }
     public OffsetDateTime getStartedAt() { return startedAt; }
     public OffsetDateTime getEndsAt() { return endsAt; }
