@@ -1,0 +1,36 @@
+.dashboard-container {
+  min-height: 100vh;
+  background-color: #e9e9e9;
+  padding: 40px;
+}
+
+.dashboard-header {
+  background-color: #b39b8b;
+  padding: 20px 40px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  margin: 0;
+  font-size: 30px;
+  letter-spacing: 3px;
+}
+
+.add-button {
+  font-size: 28px;
+  padding: 8px 18px;
+  cursor: pointer;
+  border: none;
+  background-color: white;
+}
+
+.games-grid {
+  margin-top: 50px;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 35px;
+}
