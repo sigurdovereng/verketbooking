@@ -11,11 +11,11 @@ public interface ReservationRep extends JpaRepository<Reservation, Long> {
     @Modifying
     @Transactional
     @Query("""
-        update QueEntry q
-        set q.phoneNumber = null
-        where q.phoneNumber is not null
-          and q.status in ('DONE', 'NO_SHOW', 'CANCELLED')
-          and (q.endsAt is null or q.endsAt < CURRENT_TIMESTAMP)
+        update Reservation r
+        set r.phoneNumber = null
+        where r.phoneNumber is not null
+        and r.status in ('DONE', 'NO_SHOW', 'CANCELLED')
+        and (r.endsAt is null or r.endsAt < CURRENT_TIMESTAMP)
     """)
     int removePhoneNumbersForFinishedEntries();
 }
