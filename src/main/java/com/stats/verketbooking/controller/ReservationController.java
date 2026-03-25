@@ -31,7 +31,7 @@ public class ReservationController {
     @PostMapping
     public Reservation create(@Valid @RequestBody ReservationDto dto) {
 
-        Game game = gameService.getById(dto.getGameId());
+        Game game = gameService.getGameById(dto.getGameId());
 
         Reservation reservation = new Reservation(
                 dto.getName(),

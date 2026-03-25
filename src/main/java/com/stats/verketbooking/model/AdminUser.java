@@ -22,6 +22,12 @@ public class AdminUser {
 
     protected AdminUser() {}
 
+    public AdminUser(String username, String passwordHash, OffsetDateTime createdAt) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.createdAt = createdAt;
+    }
+
     public Long getId() { return id; }
     public String getUsername() { return username; }
     public String getPasswordHash() { return passwordHash; }
