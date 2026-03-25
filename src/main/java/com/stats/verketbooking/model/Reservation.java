@@ -42,6 +42,15 @@ public class Reservation {
 
     protected Reservation() {}
 
+    public Reservation(String name, String phoneNumber, String status, Game game, OffsetDateTime startedAt, OffsetDateTime endsAt) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.status = status;
+        this.game = game;
+        this.startedAt = startedAt;
+        this.endsAt = endsAt;
+    }
+
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getPhoneNumber() { return phoneNumber; }
