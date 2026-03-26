@@ -1,8 +1,6 @@
 package com.stats.verketbooking.model;
 
 import jakarta.persistence.*;
-import lombok.Setter;
-
 import java.time.OffsetDateTime;
 
 @Entity
@@ -13,36 +11,27 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
+    @Column(nullable = false, unique = true, length = 120)
     private String name;
 
-    @Setter
-    @Column(name = "is_active")
-    private Boolean isActive;
+    @Column(name = "is_active", nullable = false)
+    private boolean isActive = false;
 
-    @Setter
-    @Column(name = "created_at")
+    @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
 
-    public Game() {
+    protected Game() {}
+
+    public Game(String name) {
+        this.name = name;
+        this.isActive = false;
     }
 
-    // Getters and Setters
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public boolean isActive() { return isActive; }
+    public OffsetDateTime getCreatedAt() { return createdAt; }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
+    public void setName(String name) { this.name = name; }
+    public void setActive(boolean active) { this.isActive = active; }
 }
