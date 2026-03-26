@@ -1,0 +1,122 @@
+.overview-empty {
+  padding: 100px 40px;
+  text-align: center;
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 15px;
+}
+
+.overview-header {
+  padding: 28px 40px 12px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.overview-title {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-dim);
+}
+
+.overview-count {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.overview-list {
+  padding: 8px 40px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 900px;
+}
+
+.overview-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.overview-item.active {
+  border-color: var(--accent);
+  background: var(--surface-2);
+  box-shadow: 0 0 0 1px var(--accent), 0 4px 20px rgba(200, 169, 110, 0.08);
+}
+
+.overview-item.past {
+  opacity: 0.35;
+}
+
+.overview-time {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  min-width: 130px;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview-info {
+  flex: 1;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.overview-game {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  background: var(--surface-3);
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border-2);
+}
+
+.overview-name {
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.overview-phone {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.overview-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--amber);
+  border: 1px solid var(--amber-border);
+  background: var(--amber-bg);
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+}
+
+.overview-delete {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: color 0.15s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.overview-delete:hover {
+  color: var(--red);
+}

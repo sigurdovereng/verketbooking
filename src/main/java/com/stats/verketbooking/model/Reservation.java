@@ -1,95 +1,66 @@
 package com.stats.verketbooking.model;
 
 import jakarta.persistence.*;
-import lombok.Setter;
-
+import org.hibernate.annotations.CreationTimestamp;
 import java.time.OffsetDateTime;
 
 @Entity
-@Table(name = "queue_entry")
+@Table(name = "reservation")
 public class Reservation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
+    @Column(nullable = false, length = 120)
     private String name;
 
-    @Setter
-    @Column(name = "phone_number")
+    @Column(name = "phone_number", nullable = false, length = 20)
     private String phoneNumber;
 
-    @Setter
+    // Anbefalt: hold det som VARCHAR i DB for å unngå mapping-trøbbel
+    @Column(nullable = false, length = 30)
     private String status;
 
-    @Setter
-    @Column(name = "game_id")
-    private Long gameId;
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "game_id", nullable = false)
+    private Game game;
 
-    @Setter
-    @Column(name = "created_at")
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private OffsetDateTime createdAt;
 
-    @Setter
     @Column(name = "started_at")
     private OffsetDateTime startedAt;
 
-    @Setter
     @Column(name = "ends_at")
     private OffsetDateTime endsAt;
 
-    @Setter
     @Column(name = "next_up_sms_sent_at")
     private OffsetDateTime nextUpSmsSentAt;
 
-    @Setter
     @Column(name = "ending_soon_sms_sent_at")
     private OffsetDateTime endingSoonSmsSentAt;
 
-    public Reservation() {
+    protected Reservation() {}
+
+    public Reservation(String name, String phoneNumber, String status, Game game, OffsetDateTime startedAt, OffsetDateTime endsAt) {
+        this.name = name;
+        this.phoneNumber = phoneNumber;
+        this.status = status;
+        this.game = game;
+        this.startedAt = startedAt;
+        this.endsAt = endsAt;
     }
 
-    // Getters and Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public Long getGameId() {
-        return gameId;
-    }
-
-    public OffsetDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public OffsetDateTime getStartedAt() {
-        return startedAt;
-    }
-
-    public OffsetDateTime getEndsAt() {
-        return endsAt;
-    }
-
-    public OffsetDateTime getNextUpSmsSentAt() {
-        return nextUpSmsSentAt;
-    }
-
-    public OffsetDateTime getEndingSoonSmsSentAt() {
-        return endingSoonSmsSentAt;
-    }
-
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public String getPhoneNumber() { return phoneNumber; }
+    public String getStatus() { return status; }
+    public Game getGame() { return game; }
+    public OffsetDateTime getCreatedAt() { return createdAt; }
+    public OffsetDateTime getStartedAt() { return startedAt; }
+    public OffsetDateTime getEndsAt() { return endsAt; }
+    public OffsetDateTime getNextUpSmsSentAt() { return nextUpSmsSentAt; }
+    public OffsetDateTime getEndingSoonSmsSentAt() { return endingSoonSmsSentAt; }
 }
