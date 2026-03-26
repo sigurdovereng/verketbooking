@@ -1,11 +1,15 @@
 package com.stats.verketbooking.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "reservation")
+@Getter
+@Setter
 public class Reservation {
 
     @Id
@@ -35,7 +39,7 @@ public class Reservation {
 
     @Column(name = "ends_at")
     private OffsetDateTime endsAt;
-
+    
     @Column(name = "next_up_sms_sent_at")
     private OffsetDateTime nextUpSmsSentAt;
 
@@ -52,15 +56,4 @@ public class Reservation {
         this.startedAt = startedAt;
         this.endsAt = endsAt;
     }
-
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public String getPhoneNumber() { return phoneNumber; }
-    public String getStatus() { return status; }
-    public Game getGame() { return game; }
-    public OffsetDateTime getCreatedAt() { return createdAt; }
-    public OffsetDateTime getStartedAt() { return startedAt; }
-    public OffsetDateTime getEndsAt() { return endsAt; }
-    public OffsetDateTime getNextUpSmsSentAt() { return nextUpSmsSentAt; }
-    public OffsetDateTime getEndingSoonSmsSentAt() { return endingSoonSmsSentAt; }
 }
