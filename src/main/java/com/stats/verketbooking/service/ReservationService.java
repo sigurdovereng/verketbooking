@@ -19,7 +19,20 @@ public class ReservationService {
         return reservationRepo.findAll();
     }
 
+    public Reservation getById(Long id) {
+        return reservationRepo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Reservation not found: " + id));
+    }
+
     public Reservation save(Reservation reservation) {
+        boolean overlaps = reservationRepo.existsByGameAndStartedAtBeforeAndEndsAtAfter(
+                reservation.getGame(),
+                reservation.getEndsAt(),
+                reservation.getStartedAt()
+        );
+        if (overlaps) {
+            throw new IllegalStateException("Tidspunktet er allerede opptatt for dette bordet.");
+        }
         return reservationRepo.save(reservation);
     }
 

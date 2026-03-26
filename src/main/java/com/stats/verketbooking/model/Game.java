@@ -15,7 +15,7 @@ public class Game {
     private String name;
 
     @Column(name = "is_active", nullable = false)
-    private boolean isActive = true;
+    private boolean isActive = false;
 
     @Column(name = "created_at", insertable = false, updatable = false)
     private OffsetDateTime createdAt;
@@ -24,7 +24,7 @@ public class Game {
 
     public Game(String name) {
         this.name = name;
-        this.isActive = true;
+        this.isActive = false;
     }
 
     public Long getId() { return id; }

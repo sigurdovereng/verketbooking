@@ -39,6 +39,12 @@ public class GameService {
         return gameRepo.save(game);
     }
 
+    public Game setActive(Long id, boolean active) {
+        Game game = getGameById(id);
+        game.setActive(active);
+        return gameRepo.save(game);
+    }
+
     public void deleteGame(Long id) {
         if (!gameRepo.existsById(id)) {
             throw new IllegalArgumentException("Game not found: " + id);

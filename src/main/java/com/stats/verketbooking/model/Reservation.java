@@ -1,6 +1,7 @@
 package com.stats.verketbooking.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import java.time.OffsetDateTime;
 
 @Entity
@@ -21,11 +22,12 @@ public class Reservation {
     @Column(nullable = false, length = 30)
     private String status;
 
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
     private OffsetDateTime createdAt;
 
     @Column(name = "started_at")
