@@ -23,19 +23,19 @@ public interface ReservationRep extends JpaRepository<Reservation, Long> {
 
     @Query(value = """
     SELECT *
-    FROM queue_entry
+    FROM reservation
     WHERE status = 'NEXT_UP'
       AND phone_number IS NOT NULL
       AND next_up_sms_sent_at IS NULL
-      AND start_at IS NOT NULL
-      AND start_at <= CURRENT_TIMESTAMP + INTERVAL '5 minutes'
-      AND start_at > CURRENT_TIMESTAMP
+      AND started_at IS NOT NULL
+      AND started_at <= CURRENT_TIMESTAMP + INTERVAL '5 minutes'
+      AND started_at > CURRENT_TIMESTAMP
     """, nativeQuery = true)
     List<Reservation> findReservationsNeedingNextUpSms();
 
     @Query(value = """
     SELECT *
-    FROM queue_entry
+    FROM reservation
     WHERE status = 'PLAYING'
       AND phone_number IS NOT NULL
       AND ending_soon_sms_sent_at IS NULL
