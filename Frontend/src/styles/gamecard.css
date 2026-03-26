@@ -1,29 +1,190 @@
 .game-card {
-  background-color: #d9d9d9;
-  padding: 30px;
-  min-height: 180px;
-
+  background: var(--surface);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.18s;
   display: flex;
   flex-direction: column;
+}
+
+.game-card:hover {
+  transform: translateY(-4px);
+}
+
+/* ─── STATUS STRIPE ─── */
+
+.card-stripe {
+  height: 3px;
+  width: 100%;
+}
+
+.available .card-stripe {
+  background: var(--green);
+  box-shadow: 0 0 12px var(--green-glow);
+}
+
+.occupied .card-stripe {
+  background: var(--red);
+}
+
+.ending-soon .card-stripe {
+  background: var(--amber);
+}
+
+/* ─── CARD STATES ─── */
+
+.game-card.available {
+  border-color: var(--green-border);
+  box-shadow: 0 0 0 1px var(--green-border), 0 4px 24px var(--green-glow);
+}
+
+.game-card.available:hover {
+  box-shadow: 0 0 0 1px var(--green-border), 0 12px 40px rgba(76, 212, 122, 0.15);
+}
+
+.game-card.occupied {
+  border-color: var(--red-border);
+  box-shadow: 0 0 0 1px var(--red-border), 0 4px 24px var(--red-glow);
+}
+
+.game-card.occupied:hover {
+  box-shadow: 0 0 0 1px var(--red-border), 0 12px 40px rgba(232, 102, 102, 0.18);
+}
+
+.game-card.ending-soon {
+  border-color: var(--amber-border);
+  box-shadow: 0 0 0 1px var(--amber-border), 0 4px 24px var(--amber-glow);
+  animation: pulse-card 2.5s ease-in-out infinite;
+}
+
+.game-card.ending-soon:hover {
+  box-shadow: 0 0 0 1px var(--amber-border), 0 12px 40px rgba(240, 184, 51, 0.2);
+}
+
+@keyframes pulse-card {
+  0%, 100% { box-shadow: 0 0 0 1px var(--amber-border), 0 4px 16px var(--amber-glow); }
+  50% { box-shadow: 0 0 0 1px var(--amber), 0 4px 28px rgba(240, 184, 51, 0.2); }
+}
+
+/* ─── TOP ─── */
+
+.game-card-top {
+  padding: 18px 18px 14px;
+  display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
 }
 
 .game-title {
-  margin: 0;
-  font-size: 22px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
 }
 
-.game-status {
-  padding: 12px;
-  font-size: 20px;
-  text-align: center;
+.status-badge {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-.status-ledig {
-  background-color: #8cc63f;
+.badge-ledig {
+  background: var(--green-bg);
+  color: var(--green);
+  border: 1px solid var(--green-border);
 }
 
-.status-opptatt {
-  background-color: #e21b1b;
-  color: white;
+.badge-opptatt {
+  background: var(--red-bg);
+  color: var(--red);
+  border: 1px solid var(--red-border);
+}
+
+.badge-snart {
+  background: var(--amber-bg);
+  color: var(--amber);
+  border: 1px solid var(--amber-border);
+}
+
+/* ─── BOTTOM ─── */
+
+.game-card-bottom {
+  padding: 12px 18px 16px;
+  border-top: 1px solid var(--border);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  min-height: 80px;
+}
+
+.player-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.player-time {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.time-remaining {
+  font-size: 12px;
+  margin-top: 2px;
+  font-weight: 500;
+}
+
+.occupied .time-remaining {
+  color: var(--text-muted);
+}
+
+.ending-soon .time-remaining {
+  color: var(--amber);
+}
+
+.next-up-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.no-player {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+/* ─── PROGRESS BAR ─── */
+
+.progress-track {
+  height: 3px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  transition: width 10s linear;
+}
+
+.occupied .progress-fill {
+  background: var(--red);
+}
+
+.ending-soon .progress-fill {
+  background: var(--amber);
 }

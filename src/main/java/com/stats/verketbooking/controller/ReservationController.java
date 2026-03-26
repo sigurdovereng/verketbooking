@@ -6,7 +6,9 @@ import com.stats.verketbooking.model.Reservation;
 import com.stats.verketbooking.service.GameService;
 import com.stats.verketbooking.service.ReservationService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -42,11 +44,19 @@ public class ReservationController {
                 dto.getEndsAt()
         );
 
-        return reservationService.save(reservation);
+        try {
+            Reservation saved = reservationService.save(reservation);
+            gameService.setActive(game.getId(), true);
+            return saved;
+        } catch (IllegalStateException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
+        Reservation reservation = reservationService.getById(id);
         reservationService.delete(id);
+        gameService.setActive(reservation.getGame().getId(), false);
     }
 }
