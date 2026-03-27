@@ -6,10 +6,10 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.OffsetDateTime;
 
-@Entity
-@Table(name = "reservation")
 @Getter
 @Setter
+@Entity
+@Table(name = "reservation")
 public class Reservation {
 
     @Id
