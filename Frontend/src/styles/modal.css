@@ -1,0 +1,154 @@
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  backdrop-filter: blur(4px);
+  animation: overlay-in 0.15s ease;
+}
+
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal {
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  padding: 36px;
+  min-width: 400px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7);
+  animation: modal-in 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.94) translateY(8px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.modal h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal input,
+.modal select {
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: inherit;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.modal input:focus,
+.modal select:focus {
+  border-color: var(--accent);
+}
+
+.modal input::placeholder {
+  color: var(--text-muted);
+}
+
+.modal label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-dim);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: -4px;
+}
+
+.modal-error {
+  color: var(--red);
+  font-size: 13px;
+  background: var(--red-bg);
+  border: 1px solid var(--red-border);
+  padding: 10px 14px;
+  border-radius: 6px;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: opacity 0.15s, transform 0.1s;
+}
+
+.modal-buttons button:hover {
+  opacity: 0.88;
+}
+
+.modal-buttons button:active {
+  transform: scale(0.98);
+}
+
+.modal-buttons button[type="submit"] {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.modal-buttons button[type="button"] {
+  background: var(--surface-3);
+  color: var(--text-2);
+}
+
+/* Duration pills */
+.duration-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.duration-pill {
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid var(--border-2);
+  background: var(--surface);
+  color: var(--text-2);
+  transition: border-color 0.15s, background 0.15s, color 0.15s;
+}
+
+.duration-pill:hover {
+  border-color: var(--accent-dim);
+  color: var(--accent);
+}
+
+.duration-pill.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  font-weight: 600;
+}
