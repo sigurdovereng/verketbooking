@@ -1,8 +1,13 @@
 package com.stats.verketbooking.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.OffsetDateTime;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "games")
 public class Game {
@@ -27,11 +32,4 @@ public class Game {
         this.isActive = false;
     }
 
-    public Long getId() { return id; }
-    public String getName() { return name; }
-    public boolean isActive() { return isActive; }
-    public OffsetDateTime getCreatedAt() { return createdAt; }
-
-    public void setName(String name) { this.name = name; }
-    public void setActive(boolean active) { this.isActive = active; }
 }
