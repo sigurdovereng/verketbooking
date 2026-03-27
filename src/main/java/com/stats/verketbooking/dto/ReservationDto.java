@@ -20,9 +20,6 @@ public class ReservationDto {
     @Size(max = 20)
     private String phoneNumber;
 
-    @NotBlank
-    private String status;
-
     @NotNull
     private Long gameId;
 
