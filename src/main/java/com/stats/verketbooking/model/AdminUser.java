@@ -28,8 +28,16 @@ public class AdminUser {
         this.createdAt = createdAt;
     }
 
-    public Long getId() { return id; }
-    public String getUsername() { return username; }
-    public String getPasswordHash() { return passwordHash; }
-    public OffsetDateTime getCreatedAt() { return createdAt; }
+    public Long getId() {
+        return id;
+    }
+    public String getUsername() {
+        return username;
+    }
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
 }
