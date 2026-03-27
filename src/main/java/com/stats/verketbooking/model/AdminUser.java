@@ -1,8 +1,11 @@
 package com.stats.verketbooking.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+
 import java.time.OffsetDateTime;
 
+@Getter
 @Entity
 @Table(name = "admin_user")
 public class AdminUser {
@@ -28,8 +31,4 @@ public class AdminUser {
         this.createdAt = createdAt;
     }
 
-    public Long getId() { return id; }
-    public String getUsername() { return username; }
-    public String getPasswordHash() { return passwordHash; }
-    public OffsetDateTime getCreatedAt() { return createdAt; }
 }

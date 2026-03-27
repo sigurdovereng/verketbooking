@@ -3,9 +3,13 @@ package com.stats.verketbooking.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 
+@Setter
+@Getter
 public class ReservationDto {
 
     @NotBlank
@@ -28,17 +32,4 @@ public class ReservationDto {
 
     public ReservationDto() {}
 
-    public String getName() { return name; }
-    public String getPhoneNumber() { return phoneNumber; }
-    public String getStatus() { return status; }
-    public Long getGameId() { return gameId; }
-    public OffsetDateTime getStartedAt() { return startedAt; }
-    public OffsetDateTime getEndsAt() { return endsAt; }
-
-    public void setName(String name) { this.name = name; }
-    public void setPhoneNumber(String phoneNumber) { this.phoneNumber = phoneNumber; }
-    public void setStatus(String status) { this.status = status; }
-    public void setGameId(Long gameId) { this.gameId = gameId; }
-    public void setStartedAt(OffsetDateTime startedAt) { this.startedAt = startedAt; }
-    public void setEndsAt(OffsetDateTime endsAt) { this.endsAt = endsAt; }
 }
