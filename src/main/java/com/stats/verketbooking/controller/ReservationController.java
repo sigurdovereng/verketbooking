@@ -38,7 +38,7 @@ public class ReservationController {
         Reservation reservation = new Reservation(
                 dto.getName(),
                 dto.getPhoneNumber(),
-                dto.getStatus(),
+                "NEXT_UP",
                 game,
                 dto.getStartedAt(),
                 dto.getEndsAt()

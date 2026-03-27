@@ -27,7 +27,6 @@ export default function AddReservationModal({ games, onClose, onSubmit }) {
         name,
         phoneNumber: phone,
         gameId: Number(gameId),
-        status: "PLAYING",
         startedAt: startedAt.toISOString(),
         endsAt: endsAt.toISOString(),
       });
