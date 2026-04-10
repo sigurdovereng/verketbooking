@@ -1,52 +1,18 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/queuedisplay.css";
 
+const API_BASE = "http://localhost:8080/api";
+const POLL_INTERVAL_MS = 15000;
+
 function QueueDisplay() {
-  const initialQueue = useMemo(() => {
-    const now = Date.now();
-
-    return [
-      {
-        id: 1,
-        name: "Marius",
-        game: "Shuffleboard 1",
-        status: "Spiller nå",
-        durationMinutes: 60,
-        startTime: new Date(now - 18 * 60 * 1000).toISOString(),
-        endTime: new Date(now + 42 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 2,
-        name: "Emma",
-        game: "Biljard 2",
-        status: "Spiller nå",
-        durationMinutes: 45,
-        startTime: new Date(now - 12 * 60 * 1000).toISOString(),
-        endTime: new Date(now + 33 * 60 * 1000).toISOString(),
-      },
-      {
-        id: 3,
-        name: "Jonas",
-        game: "Dart 1",
-        status: "Neste i kø",
-      },
-      {
-        id: 4,
-        name: "Sofie",
-        game: "Shuffleboard 2",
-        status: "Neste i kø",
-      },
-      {
-        id: 5,
-        name: "Lina",
-        game: "Biljard 1",
-        status: "Neste i kø",
-      },
-    ];
-  }, []);
-
-  const [queueData, setQueueData] = useState(initialQueue);
+  const [queueData, setQueueData] = useState({
+    activeGames: [],
+    waitingQueue: [],
+  });
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [lastUpdated, setLastUpdated] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -54,6 +20,46 @@ function QueueDisplay() {
     }, 1000);
 
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    let isActive = true;
+
+    async function fetchQueueData() {
+      try {
+        const response = await fetch(`${API_BASE}/display/queue`);
+
+        if (!response.ok) {
+          throw new Error("Kunne ikke hente køstatus.");
+        }
+
+        const data = await response.json();
+
+        if (!isActive) return;
+
+        setQueueData({
+          activeGames: Array.isArray(data.activeGames) ? data.activeGames : [],
+          waitingQueue: Array.isArray(data.waitingQueue) ? data.waitingQueue : [],
+        });
+        setLastUpdated(new Date());
+        setError(null);
+      } catch {
+        if (!isActive) return;
+        setError("Klarte ikke å oppdatere køstatus akkurat nå.");
+      } finally {
+        if (isActive) {
+          setIsLoading(false);
+        }
+      }
+    }
+
+    fetchQueueData();
+    const poller = setInterval(fetchQueueData, POLL_INTERVAL_MS);
+
+    return () => {
+      isActive = false;
+      clearInterval(poller);
+    };
   }, []);
 
   function formatClock(date) {
@@ -111,8 +117,8 @@ function QueueDisplay() {
     return percent;
   }
 
-  const activeGames = queueData.filter((item) => item.status === "Spiller nå");
-  const waitingQueue = queueData.filter((item) => item.status === "Neste i kø");
+  const activeGames = queueData.activeGames;
+  const waitingQueue = queueData.waitingQueue;
 
   return (
     <div className="queue-display">
@@ -120,12 +126,23 @@ function QueueDisplay() {
         <div>
           <h1>Køoversikt</h1>
           <p>Live visning for kunder</p>
+          <p className="queue-updated-at">
+            {lastUpdated
+              ? `Sist oppdatert ${formatClock(lastUpdated)}`
+              : "Venter på første oppdatering"}
+          </p>
         </div>
 
         <div className="queue-clock-box">
           <span>{formatClock(currentTime)}</span>
         </div>
       </header>
+
+      {error && (
+        <div className="queue-status-banner">
+          {error} Viser siste kjente data.
+        </div>
+      )}
 
       <section className="queue-section">
         <div className="section-title-row">
@@ -134,37 +151,43 @@ function QueueDisplay() {
         </div>
 
         <div className="active-grid">
-          {activeGames.map((item) => {
-            const timeLeft = getTimeLeft(item.endTime);
-            const progress = getProgressPercent(item.startTime, item.endTime);
+          {isLoading ? (
+            <p className="queue-empty-state">Laster køstatus...</p>
+          ) : activeGames.length === 0 ? (
+            <p className="queue-empty-state">Ingen spiller akkurat nå.</p>
+          ) : (
+            activeGames.map((item) => {
+              const timeLeft = getTimeLeft(item.endTime);
+              const progress = getProgressPercent(item.startTime, item.endTime);
 
-            return (
-              <div className="active-card" key={item.id}>
-                <div className="card-top">
-                  <div>
-                    <h3>{item.name}</h3>
-                    <p className="game-name">{item.game}</p>
+              return (
+                <div className="active-card" key={item.id}>
+                  <div className="card-top">
+                    <div>
+                      <h3>{item.name}</h3>
+                      <p className="game-name">{item.gameName}</p>
+                    </div>
+
+                    <div className="live-pill">LIVE</div>
                   </div>
 
-                  <div className="live-pill">LIVE</div>
-                </div>
+                  <div className="time-row">
+                    <span>Tid igjen</span>
+                    <strong>
+                      {formatCountdown(timeLeft.minutes, timeLeft.seconds)}
+                    </strong>
+                  </div>
 
-                <div className="time-row">
-                  <span>Tid igjen</span>
-                  <strong>
-                    {formatCountdown(timeLeft.minutes, timeLeft.seconds)}
-                  </strong>
+                  <div className="progress-bar">
+                    <div
+                      className="progress-fill"
+                      style={{ width: `${progress}%` }}
+                    ></div>
+                  </div>
                 </div>
-
-                <div className="progress-bar">
-                  <div
-                    className="progress-fill"
-                    style={{ width: `${progress}%` }}
-                  ></div>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </section>
 
@@ -175,18 +198,26 @@ function QueueDisplay() {
         </div>
 
         <div className="waiting-list">
-          {waitingQueue.map((item, index) => (
-            <div className="waiting-row" key={item.id}>
-              <div className="queue-number">{index + 1}</div>
+          {isLoading ? (
+            <p className="queue-empty-state">Laster køstatus...</p>
+          ) : waitingQueue.length === 0 ? (
+            <p className="queue-empty-state">Ingen venter i kø akkurat nå.</p>
+          ) : (
+            waitingQueue.map((item, index) => (
+              <div className="waiting-row" key={item.id}>
+                <div className="queue-number">
+                  {item.queuePosition ?? index + 1}
+                </div>
 
-              <div className="waiting-info">
-                <h3>{item.name}</h3>
-                <p>{item.game}</p>
+                <div className="waiting-info">
+                  <h3>{item.name}</h3>
+                  <p>{item.gameName}</p>
+                </div>
+
+                <div className="waiting-status">Venter</div>
               </div>
-
-              <div className="waiting-status">Venter</div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </section>
     </div>

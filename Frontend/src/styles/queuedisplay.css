@@ -37,6 +37,10 @@
   font-weight: 500;
 }
 
+.queue-updated-at {
+  opacity: 0.8;
+}
+
 .queue-clock-box {
   background: var(--surface-2);
   border: 1px solid var(--border-2);
@@ -49,6 +53,16 @@
   font-variant-numeric: tabular-nums;
   min-width: 165px;
   text-align: center;
+}
+
+.queue-status-banner {
+  margin: 20px 40px 0;
+  padding: 14px 18px;
+  background: var(--amber-bg);
+  border: 1px solid var(--amber-border);
+  border-radius: 10px;
+  color: var(--text);
+  font-size: 14px;
 }
 
 /* MAIN LAYOUT */
@@ -85,6 +99,15 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
   gap: 18px;
+}
+
+.queue-empty-state {
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  color: var(--text-muted);
 }
 
 .active-card {
@@ -274,6 +297,10 @@
 
   .queue-section {
     padding: 22px 20px 0;
+  }
+
+  .queue-status-banner {
+    margin: 20px 20px 0;
   }
 
   .queue-clock-box {
