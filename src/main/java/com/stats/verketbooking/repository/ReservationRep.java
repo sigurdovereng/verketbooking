@@ -28,8 +28,8 @@ public interface ReservationRep extends JpaRepository<Reservation, Long> {
     WHERE status = 'NEXT_UP'
       AND phone_number IS NOT NULL
       AND next_up_sms_sent_at IS NULL
-      AND start_at IS NOT NULL
-      AND start_at <= CURRENT_TIMESTAMP + INTERVAL '6 minutes'
+      AND started_at IS NOT NULL
+      AND started_at <= CURRENT_TIMESTAMP + INTERVAL '6 minutes'
       AND start_at > CURRENT_TIMESTAMP + INTERVAL '5 minutes'
     """, nativeQuery = true)
     List<Reservation> findReservationsNeedingNextUpSms();
