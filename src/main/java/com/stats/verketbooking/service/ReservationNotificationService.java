@@ -21,8 +21,18 @@ public class ReservationNotificationService {
 
     @Scheduled(fixedRate = 60000) // every 60 seconds
     public void sendScheduledNotifications() {
+        updateReservationStatuses();
         sendNextUpNotifications();
         sendEndingSoonNotifications();
+    }
+
+    public void updateReservationStatuses() {
+        int started = reservationRep.markStartedReservationsAsPlaying();
+        int finished = reservationRep.markFinishedReservationsAsDone();
+
+        //Control print
+        System.out.println("Reservations updated to PLAYING: " + started);
+        System.out.println("Reservations updated to DONE: " + finished);
     }
 
     public void sendNextUpNotifications() {
