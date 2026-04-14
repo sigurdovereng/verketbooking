@@ -54,8 +54,8 @@ public interface ReservationRep extends JpaRepository<Reservation, Long> {
     UPDATE reservation
     SET status = 'PLAYING'
     WHERE status = 'NEXT_UP'
-      AND start_at IS NOT NULL
-      AND start_at <= CURRENT_TIMESTAMP
+      AND started_at IS NOT NULL
+      AND started_at <= CURRENT_TIMESTAMP
     """, nativeQuery = true)
     int markStartedReservationsAsPlaying();
 
