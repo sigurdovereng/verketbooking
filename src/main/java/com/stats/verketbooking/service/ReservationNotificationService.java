@@ -21,6 +21,7 @@ public class ReservationNotificationService {
 
     @Scheduled(fixedRate = 60000) // every 60 seconds
     public void sendScheduledNotifications() {
+        System.out.println("Scheduled job running...............");
         updateReservationStatuses();
         sendNextUpNotifications();
         sendEndingSoonNotifications();
