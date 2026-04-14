@@ -21,15 +21,16 @@ public interface ReservationRep extends JpaRepository<Reservation, Long> {
     """)
     int removePhoneNumbersForFinishedEntries();
 
+    // Bare en 1-minutt vindu for å sende sms
     @Query(value = """
     SELECT *
     FROM reservation
     WHERE status = 'NEXT_UP'
       AND phone_number IS NOT NULL
       AND next_up_sms_sent_at IS NULL
-      AND started_at IS NOT NULL
-      AND started_at <= CURRENT_TIMESTAMP + INTERVAL '5 minutes'
-      AND started_at > CURRENT_TIMESTAMP
+      AND start_at IS NOT NULL
+      AND start_at <= CURRENT_TIMESTAMP + INTERVAL '6 minutes'
+      AND start_at > CURRENT_TIMESTAMP + INTERVAL '5 minutes'
     """, nativeQuery = true)
     List<Reservation> findReservationsNeedingNextUpSms();
 
@@ -44,6 +45,30 @@ public interface ReservationRep extends JpaRepository<Reservation, Long> {
       AND ends_at > CURRENT_TIMESTAMP
     """, nativeQuery = true)
     List<Reservation> findReservationsNeedingEndingSoonSms();
+
+
+    // Queries to change the status automatically
+    @Modifying
+    @Transactional
+    @Query(value = """
+    UPDATE reservation
+    SET status = 'PLAYING'
+    WHERE status = 'NEXT_UP'
+      AND start_at IS NOT NULL
+      AND start_at <= CURRENT_TIMESTAMP
+    """, nativeQuery = true)
+    int markStartedReservationsAsPlaying();
+
+    @Modifying
+    @Transactional
+    @Query(value = """
+    UPDATE reservation
+    SET status = 'DONE'
+    WHERE status = 'PLAYING'
+      AND ends_at IS NOT NULL
+      AND ends_at <= CURRENT_TIMESTAMP
+    """, nativeQuery = true)
+    int markFinishedReservationsAsDone();
 
 }
 
