@@ -10,18 +10,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class SmsService {
 
-    @Value("${twilio.from-number}")
-    private String fromNumber;
-
     @Value("${twilio.account-sid}")
     private String accountSid;
 
     @Value("${twilio.auth-token}")
     private String authToken;
 
+    @Value("${twilio.from-number}")
+    private String fromNumber;
+
     @PostConstruct
     public void initTwilio() {
         Twilio.init(accountSid, authToken);
+        System.out.println("Twilio initialized");
     }
 
     public String sendSms(String toNumber, String body) {
@@ -34,4 +35,13 @@ public class SmsService {
         return message.getSid();
     }
 
+    public String sendNextUpSms(String toNumber, String guestName, String gameName) {
+        String body = "Hi " + guestName + "! Your turn for " + gameName + " starts in about 5 minutes.";
+        return sendSms(toNumber, body);
+    }
+
+    public String sendEndingSoonSms(String toNumber, String guestName, String gameName) {
+        String body = "Hi " + guestName + "! Your turn for " + gameName + " ends in about 5 minutes.";
+        return sendSms(toNumber, body);
+    }
 }
