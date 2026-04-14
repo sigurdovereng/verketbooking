@@ -8,7 +8,7 @@ import Toast from "../components/Toast";
 import { useToast } from "../hooks/useToast";
 import "../styles/dashboard.css";
 
-const API_BASE = "http://localhost:8080/api";
+const API_BASE = "https://verketbooking-backend.onrender.com/api";
 
 function useClock() {
   const [now, setNow] = useState(new Date());
