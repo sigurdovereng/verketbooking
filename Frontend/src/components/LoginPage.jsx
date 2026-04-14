@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../styles/login.css";
 
-const API_BASE = "http://localhost:8080/api";
+const API_BASE = "https://verketbooking-backend.onrender.com/api";
 
 export default function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");

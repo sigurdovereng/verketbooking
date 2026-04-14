@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/queuedisplay.css";
 
-const API_BASE = "http://localhost:8080/api";
+const API_BASE = "https://verketbooking-backend.onrender.com/api";
 const POLL_INTERVAL_MS = 15000;
 
 function QueueDisplay() {
