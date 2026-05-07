@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/modal.css";
 
 const DURATIONS = [
@@ -8,21 +8,38 @@ const DURATIONS = [
   { label: "2 timer", minutes: 120 },
 ];
 
-export default function AddReservationModal({ games, onClose, onSubmit }) {
+function getTodayDateString() {
+  return new Date().toISOString().split("T")[0];
+}
+
+export default function AddReservationModal({
+  games,
+  selectedGame,
+  onClose,
+  onSubmit,
+}) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [gameId, setGameId] = useState(games[0]?.id || "");
+  const [gameId, setGameId] = useState(selectedGame?.id || games[0]?.id || "");
+  const [reservationDate, setReservationDate] = useState(getTodayDateString());
   const [startTime, setStartTime] = useState("");
   const [durationMin, setDurationMin] = useState(60);
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    if (selectedGame?.id) {
+      setGameId(selectedGame.id);
+    }
+  }, [selectedGame]);
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+
     try {
-      const today = new Date().toISOString().split("T")[0];
-      const startedAt = new Date(`${today}T${startTime}`);
+      const startedAt = new Date(`${reservationDate}T${startTime}`);
       const endsAt = new Date(startedAt.getTime() + durationMin * 60 * 1000);
+
       await onSubmit({
         name,
         phoneNumber: phone,
@@ -39,11 +56,18 @@ export default function AddReservationModal({ games, onClose, onSubmit }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <h2>Ny reservasjon</h2>
+
         <form onSubmit={handleSubmit}>
           <label>Bord</label>
-          <select value={gameId} onChange={(e) => setGameId(e.target.value)}>
+          <select
+            value={gameId}
+            onChange={(e) => setGameId(e.target.value)}
+            disabled={!!selectedGame}
+          >
             {games.map((g) => (
-              <option key={g.id} value={g.id}>{g.name}</option>
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
             ))}
           </select>
 
@@ -61,6 +85,14 @@ export default function AddReservationModal({ games, onClose, onSubmit }) {
             placeholder="+47 000 00 000"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
+            required
+          />
+
+          <label>Dato</label>
+          <input
+            type="date"
+            value={reservationDate}
+            onChange={(e) => setReservationDate(e.target.value)}
             required
           />
 
@@ -90,7 +122,9 @@ export default function AddReservationModal({ games, onClose, onSubmit }) {
 
           <div className="modal-buttons">
             <button type="submit">Legg til</button>
-            <button type="button" onClick={onClose}>Avbryt</button>
+            <button type="button" onClick={onClose}>
+              Avbryt
+            </button>
           </div>
         </form>
       </div>
