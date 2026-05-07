@@ -41,7 +41,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ─── HEADER ─── */
+/* HEADER */
 
 .dashboard-container {
   min-height: 100vh;
@@ -157,63 +157,6 @@ body {
   font-weight: 600;
 }
 
-.add-menu-wrapper {
-  position: relative;
-}
-
-.add-button {
-  background: var(--accent);
-  color: var(--bg);
-  border: none;
-  font-size: 24px;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  font-weight: 700;
-  line-height: 1;
-  transition: background 0.15s, transform 0.15s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.add-button:hover {
-  background: var(--accent-bright);
-  transform: scale(1.08);
-}
-
-.add-menu {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 10px);
-  background: var(--surface-2);
-  border: 1px solid var(--border-2);
-  min-width: 200px;
-  z-index: 100;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
-}
-
-.add-menu button {
-  width: 100%;
-  padding: 14px 20px;
-  text-align: left;
-  border: none;
-  background: none;
-  font-size: 14px;
-  font-family: inherit;
-  color: var(--text);
-  cursor: pointer;
-  transition: background 0.1s;
-  font-weight: 500;
-}
-
-.add-menu button:hover {
-  background: var(--surface-3);
-}
-
 .logout-button {
   background: transparent;
   border: 1px solid var(--border);
@@ -232,7 +175,7 @@ body {
   color: var(--accent-dim);
 }
 
-/* ─── GRID ─── */
+/* GRID */
 
 .games-grid {
   padding: 36px 40px;
@@ -244,7 +187,82 @@ body {
 .grid-empty {
   grid-column: 1 / -1;
   text-align: center;
-  padding: 80px 0;
+  padding: 20px 0 0;
   color: var(--text-muted);
   font-style: italic;
+}
+
+/* LEGG TIL BORD-KORT */
+
+.add-game-card {
+  min-height: 176px;
+  background: transparent;
+  border: 2px dashed var(--border-2);
+  border-radius: 14px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: border-color 0.15s, color 0.15s, background 0.15s, transform 0.15s;
+  padding: 24px;
+  text-align: center;
+}
+
+.add-game-card:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(200, 169, 110, 0.04);
+  transform: translateY(-2px);
+}
+
+.add-game-plus {
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.add-game-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.add-game-card:hover .add-game-title {
+  color: var(--accent);
+}
+
+.add-game-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 980px) {
+  .dashboard-header {
+    padding: 14px 20px;
+    height: auto;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .header-left,
+  .header-center,
+  .header-right {
+    width: 100%;
+  }
+
+  .header-center {
+    align-items: flex-start;
+  }
+
+  .header-right {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .games-grid {
+    padding: 22px 20px;
+  }
 }
