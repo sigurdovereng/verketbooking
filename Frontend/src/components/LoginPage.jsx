@@ -33,8 +33,8 @@ export default function LoginPage({ onLogin }) {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1 className="login-logo">VERKET</h1>
-        <p className="login-subtitle">Industribar</p>
+        <h1 className="login-logo">VÆrket</h1>
+        <p className="login-subtitle">Industri</p>
         <form onSubmit={handleSubmit}>
           <div className="login-field">
             <label>Brukernavn</label>

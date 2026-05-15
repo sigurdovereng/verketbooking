@@ -229,21 +229,15 @@
 }
 
 .next-reservation-content {
-  display: inline-flex;
-  align-items: center;
-  width: fit-content;
-  max-width: 100%;
-  padding: 8px 12px;
-  border-radius: 999px;
-  background: var(--surface-3);
-  border: 1px solid var(--border-2);
   color: var(--text);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 22px;
+  font-weight: 700;
 }
 
 .next-reservation-content.empty {
   color: var(--text-muted);
+  font-size: 16px;
+  font-weight: 500;
 }
 
 /* WAITING QUEUE */
