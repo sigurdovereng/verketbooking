@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import GameCard from "../components/GameCard";
 import AddReservationModal from "../components/AddReservationModal";
 import AddGameModal from "../components/AddGameModal";
@@ -6,9 +6,10 @@ import GameDetailModal from "../components/GameDetailModal";
 import TodayOverview from "../components/TodayOverview";
 import Toast from "../components/Toast";
 import { useToast } from "../hooks/useToast";
+import { API_BASE } from "../config/api";
+import verketGearLogo from "../assets/verket-gear-logo.png";
+import verketTextLogo from "../assets/verket-text-logo.png";
 import "../styles/dashboard.css";
-
-const API_BASE = "https://verketbooking-backend.onrender.com/api";
 
 function useClock() {
   const [now, setNow] = useState(new Date());
@@ -20,10 +21,13 @@ function useClock() {
 }
 
 export default function Dashboard({ authHeader, onLogout }) {
-  const HEADERS = {
-    "Content-Type": "application/json",
-    Authorization: authHeader,
-  };
+  const headers = useMemo(
+    () => ({
+      "Content-Type": "application/json",
+      Authorization: authHeader,
+    }),
+    [authHeader]
+  );
 
   const [games, setGames] = useState([]);
   const [reservations, setReservations] = useState([]);
@@ -35,18 +39,18 @@ export default function Dashboard({ authHeader, onLogout }) {
   const clock = useClock();
 
   const fetchGames = useCallback(() => {
-    fetch(`${API_BASE}/games`, { headers: HEADERS })
+    fetch(`${API_BASE}/games`, { headers })
       .then((r) => r.json())
       .then(setGames)
       .catch(() => {});
-  }, [authHeader]);
+  }, [headers]);
 
   const fetchReservations = useCallback(() => {
-    fetch(`${API_BASE}/reservations`, { headers: HEADERS })
+    fetch(`${API_BASE}/reservations`, { headers })
       .then((r) => r.json())
       .then(setReservations)
       .catch(() => {});
-  }, [authHeader]);
+  }, [headers]);
 
   useEffect(() => {
     fetchGames();
@@ -81,32 +85,32 @@ export default function Dashboard({ authHeader, onLogout }) {
     setModal(null);
     fetch(`${API_BASE}/games`, {
       method: "POST",
-      headers: HEADERS,
+      headers,
       body: JSON.stringify(formData),
     })
       .then(() => {
         fetchGames();
         toast(`${formData.name} er lagt til`, "success");
       })
-      .catch(() => toast("Kunne ikke opprette bord", "error"));
+      .catch(() => toast("Kunne ikke opprette spill", "error"));
   }
 
   function handleDeleteGame(gameId) {
     const game = games.find((g) => g.id === gameId);
-    fetch(`${API_BASE}/games/${gameId}`, { method: "DELETE", headers: HEADERS })
+    fetch(`${API_BASE}/games/${gameId}`, { method: "DELETE", headers })
       .then(() => {
         setSelectedGame(null);
         fetchGames();
         fetchReservations();
-        toast(`${game?.name ?? "Bordet"} er slettet`, "info");
+        toast(`${game?.name ?? "Spillet"} er slettet`, "info");
       })
-      .catch(() => toast("Kunne ikke slette bord", "error"));
+      .catch(() => toast("Kunne ikke slette spill", "error"));
   }
 
   async function handleAddReservation(formData) {
     const res = await fetch(`${API_BASE}/reservations`, {
       method: "POST",
-      headers: HEADERS,
+      headers,
       body: JSON.stringify(formData),
     });
 
@@ -123,7 +127,7 @@ export default function Dashboard({ authHeader, onLogout }) {
     const r = reservations.find((x) => x.id === reservationId);
     fetch(`${API_BASE}/reservations/${reservationId}`, {
       method: "DELETE",
-      headers: HEADERS,
+      headers,
     })
       .then(() => {
         fetchReservations();
@@ -198,9 +202,13 @@ export default function Dashboard({ authHeader, onLogout }) {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <div className="header-left">
-          <h1 className="logo">VERKET</h1>
-          <span className="logo-sub">Industribar</span>
+        <div className="header-left" aria-label="Værket Industribar">
+          <img className="logo logo-image" src={verketTextLogo} alt="Værket" />
+          <img
+            className="logo-sub logo-gear"
+            src={verketGearLogo}
+            alt="Industribar"
+          />
         </div>
 
         <div className="header-center">
@@ -214,7 +222,7 @@ export default function Dashboard({ authHeader, onLogout }) {
               <span className="occ-count">
                 {occupiedCount}/{games.length}
               </span>
-              <span className="occ-label">bord opptatt</span>
+              <span className="occ-label">spill opptatt</span>
             </div>
           )}
 
@@ -222,7 +230,7 @@ export default function Dashboard({ authHeader, onLogout }) {
             className={`view-toggle${view === "list" ? " active" : ""}`}
             onClick={() => setView((v) => (v === "grid" ? "list" : "grid"))}
           >
-            {view === "grid" ? "Dagoversikt" : "Bordvisning"}
+            {view === "grid" ? "Dagoversikt" : "Spillvisning"}
           </button>
 
           <button className="logout-button" onClick={onLogout}>
@@ -250,15 +258,15 @@ export default function Dashboard({ authHeader, onLogout }) {
             onClick={() => setModal("game")}
           >
             <span className="add-game-plus">+</span>
-            <span className="add-game-title">Legg til nytt bord</span>
+            <span className="add-game-title">Legg til nytt spill</span>
             <span className="add-game-subtitle">
-              Opprett nytt spill eller bord
+              Opprett nytt spill
             </span>
           </button>
 
           {games.length === 0 && (
             <p className="grid-empty">
-              Ingen bord opprettet ennå. Trykk på boksen for å legge til det første.
+              Ingen spill opprettet ennå. Trykk på boksen for å legge til det første.
             </p>
           )}
         </div>
