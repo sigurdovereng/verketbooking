@@ -93,14 +93,18 @@ export default function Dashboard({ authHeader, onLogout }) {
 
   function handleDeleteGame(gameId) {
     const game = games.find((g) => g.id === gameId);
-    fetch(`${API_BASE}/games/${gameId}`, { method: "DELETE", headers: HEADERS })
-      .then(() => {
-        setSelectedGame(null);
-        fetchGames();
-        fetchReservations();
-        toast(`${game?.name ?? "Bordet"} er slettet`, "info");
-      })
-      .catch(() => toast("Kunne ikke slette bord", "error"));
+    setGames((prev) => prev.filter((g) => g.id !== gameId));
+    setSelectedGame(null);
+    toast(`${game?.name ?? "Bordet"} er fjernet`, "info");
+  }
+
+  function handleRenameGame(gameId, newName) {
+    setGames((prev) =>
+      prev.map((g) => (g.id === gameId ? { ...g, name: newName } : g))
+    );
+    setSelectedGame((prev) =>
+      prev?.id === gameId ? { ...prev, name: newName } : prev
+    );
   }
 
   async function handleAddReservation(formData) {
@@ -199,8 +203,8 @@ export default function Dashboard({ authHeader, onLogout }) {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <div className="header-left">
-          <h1 className="logo">VERKET</h1>
-          <span className="logo-sub">Industribar</span>
+          <h1 className="logo">VÆrket</h1>
+          <span className="logo-sub">Industri</span>
         </div>
 
         <div className="header-center">
@@ -293,6 +297,7 @@ export default function Dashboard({ authHeader, onLogout }) {
           onClose={() => setSelectedGame(null)}
           onDeleteReservation={handleDeleteReservation}
           onDeleteGame={() => handleDeleteGame(selectedGame.id)}
+          onRenameGame={(newName) => handleRenameGame(selectedGame.id, newName)}
           onAddReservation={() => openAddReservationForGame(selectedGame)}
         />
       )}
