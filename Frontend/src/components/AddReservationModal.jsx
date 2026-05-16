@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "../styles/modal.css";
+import TimePicker from "./TimePicker";
 
 const DURATIONS = [
   { label: "30 min", minutes: 30 },
@@ -137,15 +138,7 @@ export default function AddReservationModal({
           />
 
           <label>Starttidspunkt</label>
-          <input
-            type="time"
-            lang="no-NO"
-            step="300"
-            title="Bruk 24-timers format: HH:MM"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
-            required
-          />
+          <TimePicker value={startTime} onChange={setStartTime} />
 
           <label>Varighet</label>
           <div className="duration-pills">

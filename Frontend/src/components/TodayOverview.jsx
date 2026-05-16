@@ -12,11 +12,19 @@ export default function TodayOverview({ reservations, onDeleteReservation }) {
   const now = new Date();
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  // Dagsoversikten strekker seg til kl. 04:00 neste dag (bar-logikk)
+  const cutoff = new Date(today);
+  cutoff.setDate(cutoff.getDate() + 1);
+  cutoff.setHours(4, 0, 0, 0);
 
   const todayRes = reservations
-    .filter((r) => new Date(r.startedAt) >= today && new Date(r.startedAt) < tomorrow)
+    .filter(
+      (r) =>
+        new Date(r.startedAt) >= today &&
+        new Date(r.startedAt) < cutoff &&
+        new Date(r.endsAt) > now // skjul ferdige reservasjoner
+    )
     .sort((a, b) => new Date(a.startedAt) - new Date(b.startedAt));
 
   const isActive = (r) => new Date(r.startedAt) <= now && new Date(r.endsAt) >= now;

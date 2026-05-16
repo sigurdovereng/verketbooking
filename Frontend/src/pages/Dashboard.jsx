@@ -106,6 +106,15 @@ export default function Dashboard({ authHeader, onLogout }) {
       })
       .catch(() => toast("Kunne ikke slette spill", "error"));
   }
+  
+  function handleRenameGame(gameId, newName) {
+  setGames((prev) =>
+    prev.map((g) => (g.id === gameId ? { ...g, name: newName } : g))
+  );
+  setSelectedGame((prev) =>
+    prev?.id === gameId ? { ...prev, name: newName } : prev
+  );
+  }
 
   async function handleAddReservation(formData) {
     const res = await fetch(`${API_BASE}/reservations`, {
@@ -301,6 +310,7 @@ export default function Dashboard({ authHeader, onLogout }) {
           onClose={() => setSelectedGame(null)}
           onDeleteReservation={handleDeleteReservation}
           onDeleteGame={() => handleDeleteGame(selectedGame.id)}
+          onRenameGame={(newName) => handleRenameGame(selectedGame.id, newName)}
           onAddReservation={() => openAddReservationForGame(selectedGame)}
         />
       )}

@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import "../styles/gamedetail.css";
 
 function formatTime(isoString) {
@@ -15,16 +16,63 @@ export default function GameDetailModal({
   onClose,
   onDeleteReservation,
   onDeleteGame,
+  onRenameGame,
   onAddReservation,
 }) {
   const now = new Date();
+  const [editing, setEditing] = useState(false);
+  const [nameInput, setNameInput] = useState(game.name);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    setNameInput(game.name);
+  }, [game.name]);
+
+  useEffect(() => {
+    if (editing) inputRef.current?.focus();
+  }, [editing]);
+
+  function commitRename() {
+    const trimmed = nameInput.trim();
+    if (trimmed && trimmed !== game.name) {
+      onRenameGame(trimmed);
+    } else {
+      setNameInput(game.name);
+    }
+    setEditing(false);
+  }
+
+  function handleNameKeyDown(e) {
+    if (e.key === "Enter") commitRename();
+    if (e.key === "Escape") { setNameInput(game.name); setEditing(false); }
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="detail-modal" onClick={(e) => e.stopPropagation()}>
         <div className="detail-header">
-          <div>
-            <h2 className="detail-title">{game.name}</h2>
+          <div className="detail-title-group">
+            {editing ? (
+              <input
+                ref={inputRef}
+                className="detail-title-input"
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                onBlur={commitRename}
+                onKeyDown={handleNameKeyDown}
+              />
+            ) : (
+              <h2 className="detail-title">
+                {game.name}
+                <button
+                  className="rename-btn"
+                  onClick={() => setEditing(true)}
+                  title="Endre navn"
+                >
+                  ✎
+                </button>
+              </h2>
+            )}
             <span className={`status-badge ${isOccupied ? "badge-opptatt" : "badge-ledig"}`}>
               {isOccupied ? "Opptatt nå" : "Ledig nå"}
             </span>

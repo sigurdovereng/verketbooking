@@ -31,7 +31,7 @@
 }
 
 .queue-header p {
-  margin: 6px 0 0 0;
+  margin: 4px 0 0 0;
   font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -47,24 +47,25 @@
   background: var(--surface-2);
   border: 1px solid var(--border-2);
   border-radius: 10px;
-  padding: 12px 18px;
-  font-size: 26px;
+  padding: 10px 16px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text);
   letter-spacing: 2px;
   font-variant-numeric: tabular-nums;
-  min-width: 165px;
+  min-width: 150px;
   text-align: center;
 }
 
 .queue-status-banner {
-  margin: 20px 40px 0;
-  padding: 14px 18px;
+  margin: 12px 40px 0;
+  padding: 10px 16px;
   background: var(--amber-bg);
   border: 1px solid var(--amber-border);
   border-radius: 10px;
   color: var(--text);
-  font-size: 14px;
+  font-size: 13px;
+  flex-shrink: 0;
 }
 
 .queue-display.is-dense .queue-header,
@@ -124,7 +125,7 @@
 
 .section-title-row h2 {
   margin: 0;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -132,7 +133,7 @@
 }
 
 .section-count {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
@@ -159,6 +160,7 @@
 }
 
 .active-card {
+  min-height: 0;
   background: var(--surface);
   min-height: 104px;
   border-radius: 10px;
@@ -447,36 +449,10 @@
   font-weight: 500;
 }
 
-.waiting-info p {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-2);
-  background: var(--surface-3);
-  padding: 3px 10px;
-  border-radius: 20px;
-  border: 1px solid var(--border-2);
-}
-
-.waiting-status {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--amber);
-  border: 1px solid var(--amber-border);
-  background: var(--amber-bg);
-  padding: 4px 10px;
-  border-radius: 20px;
-  white-space: nowrap;
-}
-
 @media (max-width: 900px) {
   .queue-header {
-    padding: 20px;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 14px;
+    padding: 16px 20px;
+    height: auto;
   }
 
   .queue-section {
@@ -487,8 +463,8 @@
     margin: 20px 20px 0;
   }
 
-  .queue-clock-box {
-    width: 100%;
+  .active-grid {
+    grid-template-columns: 1fr;
   }
 
   .time-row strong {
