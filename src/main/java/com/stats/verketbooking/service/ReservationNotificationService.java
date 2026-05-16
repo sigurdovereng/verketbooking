@@ -41,9 +41,10 @@ public class ReservationNotificationService {
 
         for (Reservation reservation : reservations) {
             try {
-                String sid = smsService.sendSms(
+                String sid = smsService.sendNextUpSms(
                         reservation.getPhoneNumber(),
-                        "Hi " + reservation.getName() + "! Your game starts in about 5 minutes."
+                        reservation.getName(),
+                        reservation.getGame().getName()
                 );
 
                 reservation.setNextUpSmsSentAt(OffsetDateTime.now());
@@ -62,9 +63,10 @@ public class ReservationNotificationService {
 
         for (Reservation reservation : reservations) {
             try {
-                String sid = smsService.sendSms(
+                String sid = smsService.sendEndingSoonSms(
                         reservation.getPhoneNumber(),
-                        "Hi " + reservation.getName() + "! You have about 5 minutes left of your game."
+                        reservation.getName(),
+                        reservation.getGame().getName()
                 );
 
                 reservation.setEndingSoonSmsSentAt(OffsetDateTime.now());
