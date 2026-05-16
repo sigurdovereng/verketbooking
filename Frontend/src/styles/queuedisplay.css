@@ -1,8 +1,11 @@
 .queue-display {
-  min-height: 100vh;
+  height: 100vh;
+  overflow: hidden;
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  display: flex;
+  flex-direction: column;
 }
 
 /* HEADER */
@@ -10,14 +13,12 @@
 .queue-header {
   background: var(--surface);
   padding: 0 40px;
-  min-height: 92px;
+  height: 80px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid var(--border-2);
-  position: sticky;
-  top: 0;
-  z-index: 40;
 }
 
 .queue-header h1 {
@@ -29,7 +30,7 @@
 }
 
 .queue-header p {
-  margin: 6px 0 0 0;
+  margin: 4px 0 0 0;
   font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
@@ -45,30 +46,35 @@
   background: var(--surface-2);
   border: 1px solid var(--border-2);
   border-radius: 10px;
-  padding: 12px 18px;
-  font-size: 26px;
+  padding: 10px 16px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--text);
   letter-spacing: 2px;
   font-variant-numeric: tabular-nums;
-  min-width: 165px;
+  min-width: 150px;
   text-align: center;
 }
 
 .queue-status-banner {
-  margin: 20px 40px 0;
-  padding: 14px 18px;
+  margin: 12px 40px 0;
+  padding: 10px 16px;
   background: var(--amber-bg);
   border: 1px solid var(--amber-border);
   border-radius: 10px;
   color: var(--text);
-  font-size: 14px;
+  font-size: 13px;
+  flex-shrink: 0;
 }
 
 /* MAIN LAYOUT */
 
 .queue-section {
-  padding: 28px 40px 0;
+  flex: 1;
+  min-height: 0;
+  padding: 16px 24px 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .section-title-row {
@@ -76,12 +82,13 @@
   justify-content: space-between;
   align-items: center;
   gap: 16px;
-  margin-bottom: 18px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
 }
 
 .section-title-row h2 {
   margin: 0;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -89,16 +96,19 @@
 }
 
 .section-count {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
 }
 
 /* ACTIVE GAMES */
 
 .active-grid {
+  flex: 1;
+  min-height: 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
+  grid-auto-rows: 1fr;
+  gap: 14px;
 }
 
 .queue-empty-state {
@@ -111,15 +121,17 @@
 }
 
 .active-card {
+  min-height: 0;
   background: var(--surface);
   border-radius: 14px;
   border: 1px solid var(--amber-border);
   box-shadow: 0 0 0 1px var(--amber-border), 0 4px 24px var(--amber-glow);
-  padding: 22px;
+  padding: 20px 24px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 14px;
   animation: pulse-queue-card 2.5s ease-in-out infinite;
+  overflow: hidden;
 }
 
 @keyframes pulse-queue-card {
@@ -138,22 +150,20 @@
   gap: 14px;
 }
 
-/* 🔥 NAVN LITT MINDRE */
 .card-top h3 {
   margin: 0;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 28px;
+  font-weight: 700;
   color: var(--text);
 }
 
-/* 🔥 SPILL STØRRE ENN NAVN */
 .game-name {
   margin: 0 0 6px 0;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
   color: var(--accent);
   background: var(--surface-3);
-  padding: 6px 12px;
+  padding: 4px 10px;
   border-radius: 20px;
   border: 1px solid var(--border-2);
   display: inline-block;
@@ -167,7 +177,7 @@
   color: var(--amber);
   border: 1px solid var(--amber-border);
   background: var(--amber-bg);
-  padding: 5px 10px;
+  padding: 4px 10px;
   border-radius: 20px;
   white-space: nowrap;
   flex-shrink: 0;
@@ -181,7 +191,7 @@
 }
 
 .time-row span {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 1px;
@@ -189,15 +199,16 @@
 }
 
 .time-row strong {
-  font-size: 34px;
+  font-size: 42px;
   color: var(--accent);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 .progress-bar {
   width: 100%;
-  height: 6px;
+  height: 5px;
   background: var(--surface-3);
   border-radius: 999px;
   overflow: hidden;
@@ -209,19 +220,19 @@
   transition: width 1s linear;
 }
 
-/* 🔥 NESTE RESERVASJON I KORT */
+/* NESTE RESERVASJON */
 
 .next-reservation-box {
-  margin-top: 4px;
-  padding-top: 14px;
+  margin-top: auto;
+  padding-top: 12px;
   border-top: 1px solid var(--border-2);
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 .next-reservation-label {
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -230,126 +241,31 @@
 
 .next-reservation-content {
   color: var(--text);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
 }
 
 .next-reservation-content.empty {
   color: var(--text-muted);
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
-}
-
-/* WAITING QUEUE */
-
-.waiting-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 1100px;
-  padding-bottom: 40px;
-}
-
-.waiting-row {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px 20px;
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  transition: border-color 0.15s, background 0.15s;
-}
-
-.waiting-row:hover {
-  border-color: var(--accent-dim);
-  background: var(--surface-2);
-}
-
-.queue-number {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--surface-3);
-  border: 1px solid var(--border-2);
-  color: var(--accent);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 16px;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.waiting-info {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.waiting-info h3 {
-  margin: 0;
-  font-size: 15px;
-  color: var(--text);
-  font-weight: 500;
-}
-
-.waiting-info p {
-  margin: 0;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text-2);
-  background: var(--surface-3);
-  padding: 3px 10px;
-  border-radius: 20px;
-  border: 1px solid var(--border-2);
-}
-
-.waiting-status {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--amber);
-  border: 1px solid var(--amber-border);
-  background: var(--amber-bg);
-  padding: 4px 10px;
-  border-radius: 20px;
-  white-space: nowrap;
 }
 
 @media (max-width: 900px) {
   .queue-header {
-    padding: 20px;
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 14px;
+    padding: 16px 20px;
+    height: auto;
   }
 
   .queue-section {
-    padding: 22px 20px 0;
-  }
-
-  .queue-status-banner {
-    margin: 20px 20px 0;
-  }
-
-  .queue-clock-box {
-    width: 100%;
-  }
-
-  .time-row strong {
-    font-size: 28px;
-  }
-
-  .waiting-row {
-    align-items: flex-start;
-    flex-direction: column;
+    padding: 12px 16px;
   }
 
   .active-grid {
     grid-template-columns: 1fr;
+  }
+
+  .time-row strong {
+    font-size: 24px;
   }
 }

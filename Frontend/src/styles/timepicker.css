@@ -1,8 +1,39 @@
+.time-picker-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.time-confirm-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--bg);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.time-confirm-btn:hover {
+  opacity: 0.88;
+}
+
+.time-confirm-btn.confirmed {
+  background: var(--surface-3);
+  color: var(--accent);
+  border: 1px solid var(--accent-dim);
+}
+
 .time-picker {
   position: relative;
   display: flex;
   align-items: center;
-  height: 280px; /* 5 * 56px */
+  height: 168px; /* 3 * 56px */
   background: var(--surface);
   border: 1px solid var(--border-2);
   border-radius: 12px;
@@ -65,7 +96,7 @@
 }
 
 .wheel-pad {
-  height: 112px; /* 2 * ITEM_H — gir plass til å sentrere første/siste element */
+  height: 56px; /* = ITEM_H — 2 pads gir totalt 112px = riktig sentrering */
   scroll-snap-align: none;
   flex-shrink: 0;
 }
