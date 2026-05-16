@@ -129,7 +129,7 @@ export default function GameDetailModal({
 
         <div className="detail-footer">
           <button className="delete-game-btn" onClick={onDeleteGame}>
-            Slett bord
+            Slett spill
           </button>
         </div>
       </div>

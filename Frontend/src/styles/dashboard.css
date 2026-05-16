@@ -63,23 +63,21 @@ body {
 
 .header-left {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: 10px;
 }
 
-.logo {
-  font-size: 20px;
-  letter-spacing: 6px;
-  font-weight: 700;
-  color: var(--accent);
+.logo-text-img {
+  height: 22px;
+  width: auto;
+  object-fit: contain;
 }
 
-.logo-sub {
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  font-weight: 500;
+.logo-gear-img {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.85;
 }
 
 .header-center {

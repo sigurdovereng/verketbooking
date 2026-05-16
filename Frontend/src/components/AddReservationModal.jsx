@@ -49,7 +49,7 @@ export default function AddReservationModal({
         endsAt: endsAt.toISOString(),
       });
     } catch (err) {
-      setError(err.message || "Tidspunktet er allerede opptatt for dette bordet.");
+      setError(err.message || "Tidspunktet er allerede opptatt for dette spillet.");
     }
   }
 
@@ -59,7 +59,7 @@ export default function AddReservationModal({
         <h2>Ny reservasjon</h2>
 
         <form onSubmit={handleSubmit}>
-          <label>Bord</label>
+          <label>Spill</label>
           <select
             value={gameId}
             onChange={(e) => setGameId(e.target.value)}

@@ -12,10 +12,10 @@ export default function AddGameModal({ onClose, onSubmit }) {
   return (
     <div className="modal-overlay">
       <div className="modal">
-        <h2>Nytt bord</h2>
+        <h2>Nytt spill</h2>
         <form onSubmit={handleSubmit}>
           <input
-            placeholder="Navn på bord (f.eks. Shuffle 1)"
+            placeholder="Navn på spill (f.eks. Shuffle 1)"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
