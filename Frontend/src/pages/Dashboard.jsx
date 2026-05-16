@@ -8,6 +8,7 @@ import Toast from "../components/Toast";
 import { useToast } from "../hooks/useToast";
 import "../styles/dashboard.css";
 
+//Prøver å pushe denne endringen
 const API_BASE = "https://verket-booking.onrender.com/api";
 
 function useClock() {
