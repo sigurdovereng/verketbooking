@@ -9,8 +9,43 @@ const DURATIONS = [
   { label: "2 timer", minutes: 120 },
 ];
 
+function pad(value) {
+  return String(value).padStart(2, "0");
+}
+
 function getTodayDateString() {
-  return new Date().toISOString().split("T")[0];
+  const today = new Date();
+  return `${pad(today.getDate())}.${pad(today.getMonth() + 1)}.${today.getFullYear()}`;
+}
+
+function parseNorwegianDateTime(dateText, timeText) {
+  const dateMatch = dateText.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  const timeMatch = timeText.match(/^([01]\d|2[0-3]):([0-5]\d)$/);
+
+  if (!dateMatch) {
+    throw new Error("Dato må skrives som dd.mm.åååå.");
+  }
+
+  if (!timeMatch) {
+    throw new Error("Starttidspunkt må skrives som HH:MM i 24-timers format.");
+  }
+
+  const day = Number(dateMatch[1]);
+  const month = Number(dateMatch[2]);
+  const year = Number(dateMatch[3]);
+  const hours = Number(timeMatch[1]);
+  const minutes = Number(timeMatch[2]);
+  const date = new Date(year, month - 1, day, hours, minutes, 0, 0);
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    throw new Error("Datoen finnes ikke. Bruk dd.mm.åååå.");
+  }
+
+  return date;
 }
 
 export default function AddReservationModal({
@@ -38,7 +73,7 @@ export default function AddReservationModal({
     setError(null);
 
     try {
-      const startedAt = new Date(`${reservationDate}T${startTime}`);
+      const startedAt = parseNorwegianDateTime(reservationDate, startTime);
       const endsAt = new Date(startedAt.getTime() + durationMin * 60 * 1000);
 
       await onSubmit({
@@ -91,7 +126,12 @@ export default function AddReservationModal({
 
           <label>Dato</label>
           <input
-            type="date"
+            type="text"
+            inputMode="numeric"
+            placeholder="15.05.2026"
+            pattern="[0-9]{2}\.[0-9]{2}\.[0-9]{4}"
+            maxLength="10"
+            title="Bruk norsk datoformat: dd.mm.åååå"
             value={reservationDate}
             onChange={(e) => setReservationDate(e.target.value)}
             required

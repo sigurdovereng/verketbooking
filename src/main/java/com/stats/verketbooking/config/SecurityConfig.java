@@ -39,6 +39,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/actuator/health").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/display/queue").permitAll()
                         .anyRequest().authenticated()
@@ -54,9 +55,9 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "http://localhost:3001",
-                "https://verketbooking.onrender.com"
+                "https://vaerketbooking.onrender.com"
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
+        config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT","OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
