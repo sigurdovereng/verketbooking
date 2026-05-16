@@ -1,7 +1,7 @@
 import { useState } from "react";
+import { API_BASE } from "../config/api";
+import verketTextLogo from "../assets/verket-text-logo.png";
 import "../styles/login.css";
-
-const API_BASE = "https://verket-booking.onrender.com/api";
 
 export default function LoginPage({ onLogin }) {
   const [username, setUsername] = useState("");
@@ -33,8 +33,9 @@ export default function LoginPage({ onLogin }) {
   return (
     <div className="login-container">
       <div className="login-card">
-        <h1 className="login-logo">VERKET</h1>
-        <p className="login-subtitle">Industribar</p>
+        <div className="login-brand" aria-label="Værket Industribar">
+          <img src={verketTextLogo} alt="Værket Industribar" />
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="login-field">
             <label>Brukernavn</label>
