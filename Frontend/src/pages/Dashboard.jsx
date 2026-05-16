@@ -8,7 +8,7 @@ import Toast from "../components/Toast";
 import { useToast } from "../hooks/useToast";
 import "../styles/dashboard.css";
 
-const API_BASE = "https://verketbooking-backend.onrender.com/api";
+const API_BASE = "http://localhost:8080/api";
 
 function useClock() {
   const [now, setNow] = useState(new Date());
@@ -88,14 +88,14 @@ export default function Dashboard({ authHeader, onLogout }) {
         fetchGames();
         toast(`${formData.name} er lagt til`, "success");
       })
-      .catch(() => toast("Kunne ikke opprette bord", "error"));
+      .catch(() => toast("Kunne ikke opprette spill", "error"));
   }
 
   function handleDeleteGame(gameId) {
     const game = games.find((g) => g.id === gameId);
     setGames((prev) => prev.filter((g) => g.id !== gameId));
     setSelectedGame(null);
-    toast(`${game?.name ?? "Bordet"} er fjernet`, "info");
+    toast(`${game?.name ?? "Spillet"} er fjernet`, "info");
   }
 
   function handleRenameGame(gameId, newName) {
@@ -203,8 +203,8 @@ export default function Dashboard({ authHeader, onLogout }) {
     <div className="dashboard-container">
       <div className="dashboard-header">
         <div className="header-left">
-          <h1 className="logo">VÆrket</h1>
-          <span className="logo-sub">Industri</span>
+          <img src="/Vrkettekstlogo.png" alt="Værket Industribar" className="logo-text-img" />
+          <img src="/tannhjullogo.png" alt="" className="logo-gear-img" />
         </div>
 
         <div className="header-center">
@@ -218,7 +218,7 @@ export default function Dashboard({ authHeader, onLogout }) {
               <span className="occ-count">
                 {occupiedCount}/{games.length}
               </span>
-              <span className="occ-label">bord opptatt</span>
+              <span className="occ-label">spill opptatt</span>
             </div>
           )}
 
@@ -226,7 +226,7 @@ export default function Dashboard({ authHeader, onLogout }) {
             className={`view-toggle${view === "list" ? " active" : ""}`}
             onClick={() => setView((v) => (v === "grid" ? "list" : "grid"))}
           >
-            {view === "grid" ? "Dagoversikt" : "Bordvisning"}
+            {view === "grid" ? "Dagoversikt" : "Spillvisning"}
           </button>
 
           <button className="logout-button" onClick={onLogout}>
@@ -254,15 +254,15 @@ export default function Dashboard({ authHeader, onLogout }) {
             onClick={() => setModal("game")}
           >
             <span className="add-game-plus">+</span>
-            <span className="add-game-title">Legg til nytt bord</span>
+            <span className="add-game-title">Legg til nytt spill</span>
             <span className="add-game-subtitle">
-              Opprett nytt spill eller bord
+              Opprett nytt spill
             </span>
           </button>
 
           {games.length === 0 && (
             <p className="grid-empty">
-              Ingen bord opprettet ennå. Trykk på boksen for å legge til det første.
+              Ingen spill opprettet ennå. Trykk på boksen for å legge til det første.
             </p>
           )}
         </div>
