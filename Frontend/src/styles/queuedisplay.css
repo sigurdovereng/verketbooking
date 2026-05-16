@@ -97,7 +97,7 @@
 
 .active-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 18px;
 }
 
@@ -138,20 +138,22 @@
   gap: 14px;
 }
 
+/* 🔥 NAVN LITT MINDRE */
 .card-top h3 {
   margin: 0;
-  font-size: 24px;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
   color: var(--text);
 }
 
+/* 🔥 SPILL STØRRE ENN NAVN */
 .game-name {
-  margin: 8px 0 0 0;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-2);
+  margin: 0 0 6px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
   background: var(--surface-3);
-  padding: 4px 10px;
+  padding: 6px 12px;
   border-radius: 20px;
   border: 1px solid var(--border-2);
   display: inline-block;
@@ -205,6 +207,43 @@
   height: 100%;
   background: var(--amber);
   transition: width 1s linear;
+}
+
+/* 🔥 NESTE RESERVASJON I KORT */
+
+.next-reservation-box {
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-2);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.next-reservation-label {
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.next-reservation-content {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.next-reservation-content.empty {
+  color: var(--text-muted);
 }
 
 /* WAITING QUEUE */
@@ -314,5 +353,9 @@
   .waiting-row {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .active-grid {
+    grid-template-columns: 1fr;
   }
 }
