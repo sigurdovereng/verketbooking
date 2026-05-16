@@ -56,7 +56,7 @@ public class SecurityConfig {
                 "http://localhost:3001",
                 "https://vaerketbooking.onrender.com"
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT"));
+        config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT","OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 
