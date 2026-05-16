@@ -45,12 +45,12 @@ public class SmsService {
     }
 
     public String sendNextUpSms(String toNumber, String guestName, String gameName) {
-        String body = "Hi " + guestName + "! Your turn for " + gameName + " starts in about 5 minutes.";
+        String body = "Hei " + guestName + "! Det er snart din tur til " + gameName + ". Spillet starter om cirka 5 minutter. - Værket";;
         return sendSms(toNumber, body);
     }
 
     public String sendEndingSoonSms(String toNumber, String guestName, String gameName) {
-        String body = "Hi " + guestName + "! Your turn for " + gameName + " ends in about 5 minutes.";
+        String body = "Hei " + guestName + "! Du har cirka 5 minutter igjen av spilletiden din, husk å levere tilbake utstyret. - Værket";
         return sendSms(toNumber, body);
     }
 
