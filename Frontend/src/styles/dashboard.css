@@ -63,23 +63,24 @@ body {
 
 .header-left {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
 }
 
-.logo {
-  font-size: 20px;
-  letter-spacing: 6px;
-  font-weight: 700;
-  color: var(--accent);
+.logo-image {
+  display: block;
+  width: clamp(160px, 17vw, 300px);
+  height: auto;
+  flex-shrink: 0;
 }
 
-.logo-sub {
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  font-weight: 500;
+.logo-gear {
+  display: block;
+  width: clamp(58px, 7vw, 96px);
+  height: auto;
+  opacity: 0.9;
+  flex-shrink: 0;
 }
 
 .header-center {

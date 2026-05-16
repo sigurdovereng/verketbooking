@@ -21,11 +21,20 @@ public class SmsService {
 
     @PostConstruct
     public void initTwilio() {
+        if (!isConfigured()) {
+            System.out.println("Twilio is not configured. SMS sending is disabled.");
+            return;
+        }
+
         Twilio.init(accountSid, authToken);
         System.out.println("Twilio initialized");
     }
 
     public String sendSms(String toNumber, String body) {
+        if (!isConfigured()) {
+            throw new IllegalStateException("Twilio is not configured. Set TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN and TWILIO_FROM_NUMBER.");
+        }
+
         Message message = Message.creator(
                 new PhoneNumber(toNumber),
                 new PhoneNumber(fromNumber),
@@ -43,5 +52,9 @@ public class SmsService {
     public String sendEndingSoonSms(String toNumber, String guestName, String gameName) {
         String body = "Hei " + guestName + "! Du har cirka 5 minutter igjen av spilletiden din, husk å levere tilbake utstyret. - Værket";
         return sendSms(toNumber, body);
+    }
+
+    private boolean isConfigured() {
+        return !accountSid.isBlank() && !authToken.isBlank() && !fromNumber.isBlank();
     }
 }
