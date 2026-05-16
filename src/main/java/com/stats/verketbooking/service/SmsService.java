@@ -41,7 +41,7 @@ public class SmsService {
     }
 
     public String sendEndingSoonSms(String toNumber, String guestName, String gameName) {
-        String body = "Hei " + guestName + "! Du har cirka 5 minutter igjen av " + gameName + ", husk å levere tilbake utstyret. - Værket";
+        String body = "Hei " + guestName + "! Du har cirka 5 minutter igjen av spilletiden din, husk å levere tilbake utstyret. - Værket";
         return sendSms(toNumber, body);
     }
 }
