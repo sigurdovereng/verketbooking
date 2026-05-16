@@ -31,7 +31,7 @@ public class ReservationService {
                 reservation.getStartedAt()
         );
         if (overlaps) {
-            throw new IllegalStateException("Tidspunktet er allerede opptatt for dette bordet.");
+            throw new IllegalStateException("Tidspunktet er allerede opptatt for dette spillet.");
         }
         return reservationRepo.save(reservation);
     }

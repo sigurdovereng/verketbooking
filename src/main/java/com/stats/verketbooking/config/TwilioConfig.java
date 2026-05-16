@@ -16,6 +16,10 @@ public class TwilioConfig {
 
     @PostConstruct
     public void init() {
+        if (accountSid.isBlank() || authToken.isBlank()) {
+            return;
+        }
+
         Twilio.init(accountSid, authToken);
     }
 }

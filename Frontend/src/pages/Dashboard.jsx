@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import GameCard from "../components/GameCard";
 import AddReservationModal from "../components/AddReservationModal";
 import AddGameModal from "../components/AddGameModal";
@@ -6,9 +6,10 @@ import GameDetailModal from "../components/GameDetailModal";
 import TodayOverview from "../components/TodayOverview";
 import Toast from "../components/Toast";
 import { useToast } from "../hooks/useToast";
+import { API_BASE } from "../config/api";
+import verketGearLogo from "../assets/verket-gear-logo.png";
+import verketTextLogo from "../assets/verket-text-logo.png";
 import "../styles/dashboard.css";
-
-const API_BASE = "http://localhost:8080/api";
 
 function useClock() {
   const [now, setNow] = useState(new Date());
@@ -20,10 +21,13 @@ function useClock() {
 }
 
 export default function Dashboard({ authHeader, onLogout }) {
-  const HEADERS = {
-    "Content-Type": "application/json",
-    Authorization: authHeader,
-  };
+  const headers = useMemo(
+    () => ({
+      "Content-Type": "application/json",
+      Authorization: authHeader,
+    }),
+    [authHeader]
+  );
 
   const [games, setGames] = useState([]);
   const [reservations, setReservations] = useState([]);
@@ -35,18 +39,18 @@ export default function Dashboard({ authHeader, onLogout }) {
   const clock = useClock();
 
   const fetchGames = useCallback(() => {
-    fetch(`${API_BASE}/games`, { headers: HEADERS })
+    fetch(`${API_BASE}/games`, { headers })
       .then((r) => r.json())
       .then(setGames)
       .catch(() => {});
-  }, [authHeader]);
+  }, [headers]);
 
   const fetchReservations = useCallback(() => {
-    fetch(`${API_BASE}/reservations`, { headers: HEADERS })
+    fetch(`${API_BASE}/reservations`, { headers })
       .then((r) => r.json())
       .then(setReservations)
       .catch(() => {});
-  }, [authHeader]);
+  }, [headers]);
 
   useEffect(() => {
     fetchGames();
@@ -81,7 +85,7 @@ export default function Dashboard({ authHeader, onLogout }) {
     setModal(null);
     fetch(`${API_BASE}/games`, {
       method: "POST",
-      headers: HEADERS,
+      headers,
       body: JSON.stringify(formData),
     })
       .then(() => {
@@ -93,24 +97,29 @@ export default function Dashboard({ authHeader, onLogout }) {
 
   function handleDeleteGame(gameId) {
     const game = games.find((g) => g.id === gameId);
-    setGames((prev) => prev.filter((g) => g.id !== gameId));
-    setSelectedGame(null);
-    toast(`${game?.name ?? "Spillet"} er fjernet`, "info");
+    fetch(`${API_BASE}/games/${gameId}`, { method: "DELETE", headers })
+      .then(() => {
+        setSelectedGame(null);
+        fetchGames();
+        fetchReservations();
+        toast(`${game?.name ?? "Spillet"} er slettet`, "info");
+      })
+      .catch(() => toast("Kunne ikke slette spill", "error"));
   }
-
+  
   function handleRenameGame(gameId, newName) {
-    setGames((prev) =>
-      prev.map((g) => (g.id === gameId ? { ...g, name: newName } : g))
-    );
-    setSelectedGame((prev) =>
-      prev?.id === gameId ? { ...prev, name: newName } : prev
-    );
+  setGames((prev) =>
+    prev.map((g) => (g.id === gameId ? { ...g, name: newName } : g))
+  );
+  setSelectedGame((prev) =>
+    prev?.id === gameId ? { ...prev, name: newName } : prev
+  );
   }
 
   async function handleAddReservation(formData) {
     const res = await fetch(`${API_BASE}/reservations`, {
       method: "POST",
-      headers: HEADERS,
+      headers,
       body: JSON.stringify(formData),
     });
 
@@ -127,7 +136,7 @@ export default function Dashboard({ authHeader, onLogout }) {
     const r = reservations.find((x) => x.id === reservationId);
     fetch(`${API_BASE}/reservations/${reservationId}`, {
       method: "DELETE",
-      headers: HEADERS,
+      headers,
     })
       .then(() => {
         fetchReservations();
@@ -202,9 +211,13 @@ export default function Dashboard({ authHeader, onLogout }) {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <div className="header-left">
-          <img src="/Vrkettekstlogo.png" alt="Værket Industribar" className="logo-text-img" />
-          <img src="/tannhjullogo.png" alt="" className="logo-gear-img" />
+        <div className="header-left" aria-label="Værket Industribar">
+          <img className="logo logo-image" src={verketTextLogo} alt="Værket" />
+          <img
+            className="logo-sub logo-gear"
+            src={verketGearLogo}
+            alt="Industribar"
+          />
         </div>
 
         <div className="header-center">
