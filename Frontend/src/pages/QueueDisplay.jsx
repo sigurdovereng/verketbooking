@@ -117,6 +117,10 @@ function QueueDisplay() {
     return percent;
   }
 
+  function getNextReservationForGame(gameName) {
+    return waitingQueue.find((item) => item.gameName === gameName) || null;
+  }
+
   const activeGames = queueData.activeGames;
   const waitingQueue = queueData.waitingQueue;
 
@@ -159,14 +163,15 @@ function QueueDisplay() {
             activeGames.map((item) => {
               const timeLeft = getTimeLeft(item.endTime);
               const progress = getProgressPercent(item.startTime, item.endTime);
+              const nextReservation = getNextReservationForGame(item.gameName);
 
               return (
                 <div className="active-card" key={item.id}>
                   <div className="card-top">
                     <div>
+                     <p className="game-name">{item.gameName}</p>
                       <h3>{item.name}</h3>
-                      <p className="game-name">{item.gameName}</p>
-                    </div>
+                  </div>
 
                     <div className="live-pill">LIVE</div>
                   </div>
@@ -184,39 +189,22 @@ function QueueDisplay() {
                       style={{ width: `${progress}%` }}
                     ></div>
                   </div>
+
+                  <div className="next-reservation-box">
+                    <span className="next-reservation-label">Neste reservasjon</span>
+                    {nextReservation ? (
+                      <div className="next-reservation-content">
+                        <strong>{nextReservation.name}</strong>
+                      </div>
+                    ) : (
+                      <div className="next-reservation-content empty">
+                        <strong>Ingen i kø</strong>
+                      </div>
+                    )}
+                  </div>
                 </div>
               );
             })
-          )}
-        </div>
-      </section>
-
-      <section className="queue-section">
-        <div className="section-title-row">
-          <h2>Neste i kø</h2>
-          <span className="section-count">{waitingQueue.length} venter</span>
-        </div>
-
-        <div className="waiting-list">
-          {isLoading ? (
-            <p className="queue-empty-state">Laster køstatus...</p>
-          ) : waitingQueue.length === 0 ? (
-            <p className="queue-empty-state">Ingen venter i kø akkurat nå.</p>
-          ) : (
-            waitingQueue.map((item, index) => (
-              <div className="waiting-row" key={item.id}>
-                <div className="queue-number">
-                  {item.queuePosition ?? index + 1}
-                </div>
-
-                <div className="waiting-info">
-                  <h3>{item.name}</h3>
-                  <p>{item.gameName}</p>
-                </div>
-
-                <div className="waiting-status">Venter</div>
-              </div>
-            ))
           )}
         </div>
       </section>
