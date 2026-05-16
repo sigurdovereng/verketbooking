@@ -55,7 +55,8 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(
                 "http://localhost:3000",
                 "http://localhost:3001",
-                "https://vaerketbooking.onrender.com"
+                "https://vaerketbooking.onrender.com",
+                "https://verketbooking-lcvf.onrender.com"
         ));
         config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT","OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
