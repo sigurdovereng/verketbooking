@@ -1,22 +1,21 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import "../styles/timepicker.css";
 
 const ITEM_H = 56;
-const PAD = 2; // spacer-elementer øverst og nederst → 5 synlige rader totalt
+const PAD = 1; // 1 pad = 3 synlige rader totalt
 
 function pad(n) {
   return String(n).padStart(2, "0");
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i);
-const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5); // 0, 5, 10, ..., 55
+const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5);
 
 function WheelCol({ items, value, onChange }) {
   const ref = useRef(null);
   const snapTimer = useRef(null);
   const isUserScrolling = useRef(false);
 
-  // Hopp uten animasjon ved første render
   useEffect(() => {
     const i = items.indexOf(value);
     if (ref.current && i >= 0) {
@@ -25,7 +24,6 @@ function WheelCol({ items, value, onChange }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Følg ekstern verdiendring med smooth scroll (men ikke når brukeren scroller)
   useEffect(() => {
     if (isUserScrolling.current) return;
     const i = items.indexOf(value);
@@ -93,9 +91,11 @@ function parseValue(value) {
 }
 
 export default function TimePicker({ value, onChange }) {
-  const [h, m] = parseValue(value);
+  const [initH, initM] = parseValue(value);
+  const [pendingH, setPendingH] = useState(initH);
+  const [pendingM, setPendingM] = useState(initM);
 
-  // Initialiser parent-state hvis tom
+  // Initialiser parent-state ved første render
   useEffect(() => {
     if (!value) {
       const [dh, dm] = defaultTime();
@@ -104,21 +104,31 @@ export default function TimePicker({ value, onChange }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function setHour(newH) {
-    onChange(`${pad(newH)}:${pad(m)}`);
+  function confirm() {
+    onChange(`${pad(pendingH)}:${pad(pendingM)}`);
   }
 
-  function setMinute(newM) {
-    onChange(`${pad(h)}:${pad(newM)}`);
-  }
+  const confirmed = value === `${pad(pendingH)}:${pad(pendingM)}`;
 
   return (
-    <div className="time-picker">
-      <WheelCol items={HOURS} value={h} onChange={setHour} />
-      <div className="wheel-colon">:</div>
-      <WheelCol items={MINUTES} value={m} onChange={setMinute} />
-      <div className="wheel-fade" aria-hidden="true" />
-      <div className="wheel-sel-band" aria-hidden="true" />
+    <div className="time-picker-wrapper">
+      <div className="time-picker">
+        <WheelCol items={HOURS} value={pendingH} onChange={setPendingH} />
+        <div className="wheel-colon">:</div>
+        <WheelCol items={MINUTES} value={pendingM} onChange={setPendingM} />
+        <div className="wheel-fade" aria-hidden="true" />
+        <div className="wheel-sel-band" aria-hidden="true" />
+      </div>
+      <button
+        type="button"
+        className={`time-confirm-btn${confirmed ? " confirmed" : ""}`}
+        onClick={confirm}
+        touch-action="manipulation"
+      >
+        {confirmed
+          ? `✓ Valgt: ${pad(pendingH)}:${pad(pendingM)}`
+          : `Velg ${pad(pendingH)}:${pad(pendingM)}`}
+      </button>
     </div>
   );
 }
