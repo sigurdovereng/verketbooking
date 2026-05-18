@@ -12,8 +12,14 @@
 }
 
 @keyframes modal-in {
-  from { opacity: 0; transform: scale(0.94) translateY(8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .detail-header {
@@ -25,11 +31,50 @@
   gap: 16px;
 }
 
+.detail-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .detail-title {
   font-size: 22px;
   font-weight: 700;
   color: var(--text);
-  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rename-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+  touch-action: manipulation;
+}
+
+.rename-btn:hover {
+  color: var(--accent);
+  background: var(--surface-3);
+}
+
+.detail-title-input {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-family: inherit;
+  outline: none;
+  width: 100%;
 }
 
 .close-button {
@@ -52,6 +97,30 @@
   padding: 24px 28px;
   overflow-y: auto;
   flex: 1;
+}
+
+.detail-actions {
+  margin-bottom: 18px;
+}
+
+.add-reservation-btn {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--bg);
+  font-size: 14px;
+  font-weight: 700;
+  font-family: inherit;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s, border-color 0.15s;
+}
+
+.add-reservation-btn:hover {
+  background: var(--accent-bright);
+  border-color: var(--accent-bright);
+  transform: translateY(-1px);
 }
 
 .reservations-heading {

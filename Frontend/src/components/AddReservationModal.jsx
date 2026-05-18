@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/modal.css";
+import TimePicker from "./TimePicker";
 
 const DURATIONS = [
   { label: "30 min", minutes: 30 },
@@ -8,21 +9,73 @@ const DURATIONS = [
   { label: "2 timer", minutes: 120 },
 ];
 
-export default function AddReservationModal({ games, onClose, onSubmit }) {
+function pad(value) {
+  return String(value).padStart(2, "0");
+}
+
+function getTodayDateString() {
+  const today = new Date();
+  return `${pad(today.getDate())}.${pad(today.getMonth() + 1)}.${today.getFullYear()}`;
+}
+
+function parseNorwegianDateTime(dateText, timeText) {
+  const dateMatch = dateText.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  const timeMatch = timeText.match(/^([01]\d|2[0-3]):([0-5]\d)$/);
+
+  if (!dateMatch) {
+    throw new Error("Dato må skrives som dd.mm.åååå.");
+  }
+
+  if (!timeMatch) {
+    throw new Error("Starttidspunkt må skrives som HH:MM i 24-timers format.");
+  }
+
+  const day = Number(dateMatch[1]);
+  const month = Number(dateMatch[2]);
+  const year = Number(dateMatch[3]);
+  const hours = Number(timeMatch[1]);
+  const minutes = Number(timeMatch[2]);
+  const date = new Date(year, month - 1, day, hours, minutes, 0, 0);
+
+  if (
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    throw new Error("Datoen finnes ikke. Bruk dd.mm.åååå.");
+  }
+
+  return date;
+}
+
+export default function AddReservationModal({
+  games,
+  selectedGame,
+  onClose,
+  onSubmit,
+}) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [gameId, setGameId] = useState(games[0]?.id || "");
+  const [gameId, setGameId] = useState(selectedGame?.id || games[0]?.id || "");
+  const [reservationDate, setReservationDate] = useState(getTodayDateString());
   const [startTime, setStartTime] = useState("");
   const [durationMin, setDurationMin] = useState(60);
   const [error, setError] = useState(null);
 
+  useEffect(() => {
+    if (selectedGame?.id) {
+      setGameId(selectedGame.id);
+    }
+  }, [selectedGame]);
+
   async function handleSubmit(e) {
     e.preventDefault();
     setError(null);
+
     try {
-      const today = new Date().toISOString().split("T")[0];
-      const startedAt = new Date(`${today}T${startTime}`);
+      const startedAt = parseNorwegianDateTime(reservationDate, startTime);
       const endsAt = new Date(startedAt.getTime() + durationMin * 60 * 1000);
+
       await onSubmit({
         name,
         phoneNumber: phone,
@@ -31,7 +84,7 @@ export default function AddReservationModal({ games, onClose, onSubmit }) {
         endsAt: endsAt.toISOString(),
       });
     } catch (err) {
-      setError(err.message || "Tidspunktet er allerede opptatt for dette bordet.");
+      setError(err.message || "Tidspunktet er allerede opptatt for dette spillet.");
     }
   }
 
@@ -39,11 +92,18 @@ export default function AddReservationModal({ games, onClose, onSubmit }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <h2>Ny reservasjon</h2>
+
         <form onSubmit={handleSubmit}>
-          <label>Bord</label>
-          <select value={gameId} onChange={(e) => setGameId(e.target.value)}>
+          <label>Spill</label>
+          <select
+            value={gameId}
+            onChange={(e) => setGameId(e.target.value)}
+            disabled={!!selectedGame}
+          >
             {games.map((g) => (
-              <option key={g.id} value={g.id}>{g.name}</option>
+              <option key={g.id} value={g.id}>
+                {g.name}
+              </option>
             ))}
           </select>
 
@@ -64,13 +124,21 @@ export default function AddReservationModal({ games, onClose, onSubmit }) {
             required
           />
 
-          <label>Starttidspunkt</label>
+          <label>Dato</label>
           <input
-            type="time"
-            value={startTime}
-            onChange={(e) => setStartTime(e.target.value)}
+            type="text"
+            inputMode="numeric"
+            placeholder="15.05.2026"
+            pattern="[0-9]{2}\.[0-9]{2}\.[0-9]{4}"
+            maxLength="10"
+            title="Bruk norsk datoformat: dd.mm.åååå"
+            value={reservationDate}
+            onChange={(e) => setReservationDate(e.target.value)}
             required
           />
+
+          <label>Starttidspunkt</label>
+          <TimePicker value={startTime} onChange={setStartTime} />
 
           <label>Varighet</label>
           <div className="duration-pills">
@@ -90,7 +158,9 @@ export default function AddReservationModal({ games, onClose, onSubmit }) {
 
           <div className="modal-buttons">
             <button type="submit">Legg til</button>
-            <button type="button" onClick={onClose}>Avbryt</button>
+            <button type="button" onClick={onClose}>
+              Avbryt
+            </button>
           </div>
         </form>
       </div>
