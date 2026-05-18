@@ -1,0 +1,134 @@
+.time-picker-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.time-confirm-btn {
+  width: 100%;
+  padding: 13px;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: var(--bg);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 0.15s, opacity 0.15s;
+}
+
+.time-confirm-btn:hover {
+  opacity: 0.88;
+}
+
+.time-confirm-btn.confirmed {
+  background: var(--surface-3);
+  color: var(--accent);
+  border: 1px solid var(--accent-dim);
+}
+
+.time-picker {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 168px; /* 3 * 56px */
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: 12px;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Highlight-bånd i midten */
+.wheel-sel-band {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  right: 12px;
+  height: 56px;
+  transform: translateY(-50%);
+  background: var(--surface-3);
+  border: 1px solid var(--border-2);
+  border-radius: 8px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Uskarphet-maske øverst og nederst */
+.wheel-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--surface) 0%,
+    transparent 30%,
+    transparent 70%,
+    var(--surface) 100%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* KOLONNE */
+
+.wheel-col {
+  flex: 1;
+  height: 100%;
+  position: relative;
+  z-index: 2;
+}
+
+.wheel-scroller {
+  height: 100%;
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.wheel-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.wheel-pad {
+  height: 56px; /* = ITEM_H — 2 pads gir totalt 112px = riktig sentrering */
+  scroll-snap-align: none;
+  flex-shrink: 0;
+}
+
+.wheel-item {
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--text-muted);
+  scroll-snap-align: center;
+  cursor: pointer;
+  transition: color 0.12s, font-size 0.12s, font-weight 0.12s;
+  flex-shrink: 0;
+}
+
+.wheel-item.sel {
+  color: var(--accent);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* Kolon-skilletegn */
+.wheel-colon {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  padding: 0 6px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 4;
+  pointer-events: none;
+}

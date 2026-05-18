@@ -15,6 +15,8 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
     // Alle reservasjoner for et game etter et tidspunkt
     List<Reservation> findByGameAndEndsAtAfter(Game game, OffsetDateTime now);
 
+    List<Reservation> findByEndsAtGreaterThanEqualOrderByStartedAtAsc(OffsetDateTime now);
+
     // Sjekk om et game er i bruk akkurat nå
     boolean existsByGameAndStartedAtBeforeAndEndsAtAfter(
             Game game,

@@ -15,7 +15,7 @@
   border-radius: 20px;
   padding: 52px;
   width: 100%;
-  max-width: 420px;
+  max-width: 540px;
   box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7);
   animation: login-in 0.3s cubic-bezier(0.34, 1.2, 0.64, 1);
 }
@@ -25,22 +25,16 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.login-logo {
-  font-size: 40px;
-  letter-spacing: 12px;
-  font-weight: 700;
-  color: var(--accent, #c8a96e);
-  text-align: center;
-  margin-bottom: 4px;
+.login-brand {
+  display: flex;
+  justify-content: center;
+  margin: 8px 0 42px;
 }
 
-.login-subtitle {
-  text-align: center;
-  color: var(--text-muted, #6a5c4e);
-  font-size: 12px;
-  letter-spacing: 4px;
-  text-transform: uppercase;
-  margin-bottom: 40px;
+.login-brand img {
+  width: min(100%, 470px);
+  height: auto;
+  display: block;
 }
 
 .login-divider {

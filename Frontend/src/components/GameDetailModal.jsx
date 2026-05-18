@@ -1,8 +1,12 @@
+import { useState, useRef, useEffect } from "react";
 import "../styles/gamedetail.css";
 
 function formatTime(isoString) {
   if (!isoString) return "?";
-  return new Date(isoString).toLocaleTimeString("no-NO", { hour: "2-digit", minute: "2-digit" });
+  return new Date(isoString).toLocaleTimeString("no-NO", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
 }
 
 export default function GameDetailModal({
@@ -12,23 +16,80 @@ export default function GameDetailModal({
   onClose,
   onDeleteReservation,
   onDeleteGame,
+  onRenameGame,
+  onAddReservation,
 }) {
   const now = new Date();
+  const [editing, setEditing] = useState(false);
+  const [nameInput, setNameInput] = useState(game.name);
+  const inputRef = useRef(null);
+
+  useEffect(() => {
+    setNameInput(game.name);
+  }, [game.name]);
+
+  useEffect(() => {
+    if (editing) inputRef.current?.focus();
+  }, [editing]);
+
+  function commitRename() {
+    const trimmed = nameInput.trim();
+    if (trimmed && trimmed !== game.name) {
+      onRenameGame(trimmed);
+    } else {
+      setNameInput(game.name);
+    }
+    setEditing(false);
+  }
+
+  function handleNameKeyDown(e) {
+    if (e.key === "Enter") commitRename();
+    if (e.key === "Escape") { setNameInput(game.name); setEditing(false); }
+  }
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="detail-modal" onClick={(e) => e.stopPropagation()}>
         <div className="detail-header">
-          <div>
-            <h2 className="detail-title">{game.name}</h2>
+          <div className="detail-title-group">
+            {editing ? (
+              <input
+                ref={inputRef}
+                className="detail-title-input"
+                value={nameInput}
+                onChange={(e) => setNameInput(e.target.value)}
+                onBlur={commitRename}
+                onKeyDown={handleNameKeyDown}
+              />
+            ) : (
+              <h2 className="detail-title">
+                {game.name}
+                <button
+                  className="rename-btn"
+                  onClick={() => setEditing(true)}
+                  title="Endre navn"
+                >
+                  ✎
+                </button>
+              </h2>
+            )}
             <span className={`status-badge ${isOccupied ? "badge-opptatt" : "badge-ledig"}`}>
               {isOccupied ? "Opptatt nå" : "Ledig nå"}
             </span>
           </div>
-          <button className="close-button" onClick={onClose}>×</button>
+
+          <button className="close-button" onClick={onClose}>
+            ×
+          </button>
         </div>
 
         <div className="detail-body">
+          <div className="detail-actions">
+            <button className="add-reservation-btn" onClick={onAddReservation}>
+              Legg til reservasjon
+            </button>
+          </div>
+
           <h3 className="reservations-heading">Reservasjoner i dag</h3>
 
           {reservations.length === 0 ? (
@@ -38,8 +99,12 @@ export default function GameDetailModal({
               {reservations.map((r) => {
                 const isActive =
                   new Date(r.startedAt) <= now && new Date(r.endsAt) >= now;
+
                 return (
-                  <li key={r.id} className={`reservation-item ${isActive ? "active-now" : ""}`}>
+                  <li
+                    key={r.id}
+                    className={`reservation-item ${isActive ? "active-now" : ""}`}
+                  >
                     <div className="reservation-info">
                       <span className="reservation-name">{r.name}</span>
                       <span className="reservation-phone">{r.phoneNumber}</span>
@@ -48,6 +113,7 @@ export default function GameDetailModal({
                       </span>
                       {isActive && <span className="now-label">Nå</span>}
                     </div>
+
                     <button
                       className="delete-reservation-btn"
                       onClick={() => onDeleteReservation(r.id)}
@@ -63,7 +129,7 @@ export default function GameDetailModal({
 
         <div className="detail-footer">
           <button className="delete-game-btn" onClick={onDeleteGame}>
-            Slett bord
+            Slett spill
           </button>
         </div>
       </div>
