@@ -391,11 +391,19 @@ Dette skal ikke leses som en garanti for full GDPR-etterlevelse. Personvernhånd
 
 ## Juridisk merknad og bruksvilkår
 
-Repoet har ingen dedikert `LICENSE`-fil som åpner for fri bruk. Prosjektet skal derfor ikke regnes som fritt gjenbrukbart, distribuerbart eller kommersialiserbart.
+## Juridisk merknad og bruksvilkår
 
-Systemet er utviklet som bachelorprosjekt for Værket Industribar. Bruk utover prosjektets formål og oppdragsgivers avtalte bruk må avklares med relevante rettighetshavere og avtalepartene. README-en er kun en teknisk og praktisk oversikt, og erstatter ikke prosjektkontrakt, avtalevilkår eller juridisk vurdering.
+Dette prosjektet er utviklet som bachelorprosjekt i IT og informasjonssystemer ved Universitetet i Sørøst-Norge, i samarbeid med Værket Industribar.
 
-Kode, design, dokumentasjon og eventuelle tredjepartstjenester må brukes i tråd med gjeldende avtaler, tjenestevilkår og rettigheter. Twilio, Render, PostgreSQL, Spring, React og andre tredjepartsverktøy har egne lisenser og vilkår.
+I henhold til prosjektavtalen har Værket Industribar opphavsrett til den leverte løsningen. Studentene beholder samtidig de samme opphavsrettighetene som oppdragsgiver. Rettighetshaverne er derfor Værket Industribar, representert ved Johan Jørgensen, og studentgruppen bestående av Adrian Stapnes-Forås, Thor Sanele Haugen, Tobias Hjellum Svensson, Sharujan Shanmugalingam og Sigurd Øvereng.
+
+Værket Industribar kan bruke, endre, videreutvikle og benytte løsningen i andre sammenhenger enn opprinnelig forutsatt, i tråd med prosjektavtalen. Løsningen kan ikke selges videre.
+
+Prosjektet er ikke publisert som åpen kildekode. Det gis ingen generell tillatelse til fri bruk, kopiering, endring, distribusjon, kommersialisering eller videre publisering uten skriftlig avklaring med relevante rettighetshavere.
+
+Repoet er ment som teknisk dokumentasjon, prosjektoversikt og grunnlag for avtalt bruk hos Værket Industribar.
+
+Tredjepartsverktøy og biblioteker som React, Spring Boot, PostgreSQL, Twilio og Render er underlagt sine egne lisenser og bruksvilkår.
 
 ## Kjente begrensninger og videre arbeid
 
