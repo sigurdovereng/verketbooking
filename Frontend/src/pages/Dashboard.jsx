@@ -98,7 +98,11 @@ export default function Dashboard({ authHeader, onLogout }) {
   function handleDeleteGame(gameId) {
     const game = games.find((g) => g.id === gameId);
     fetch(`${API_BASE}/games/${gameId}`, { method: "DELETE", headers })
-      .then(() => {
+      .then((res) => {
+        if (!res.ok) {
+          toast("Kan ikke slette spill med aktive eller kommende reservasjoner", "error");
+          return;
+        }
         setSelectedGame(null);
         fetchGames();
         fetchReservations();

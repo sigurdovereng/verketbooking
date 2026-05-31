@@ -6,6 +6,7 @@ import com.stats.verketbooking.repository.ReservationRepo;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -53,6 +54,9 @@ public class GameService {
     public void deleteGame(Long id) {
         if (!gameRepo.existsById(id)) {
             throw new IllegalArgumentException("Game not found: " + id);
+        }
+        if (reservationRepo.existsByGameIdAndEndsAtAfter(id, OffsetDateTime.now())) {
+            throw new IllegalStateException("Kan ikke slette spill med aktive eller kommende reservasjoner");
         }
         reservationRepo.deleteByGameId(id);
         gameRepo.deleteById(id);

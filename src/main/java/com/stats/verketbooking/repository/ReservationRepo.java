@@ -33,6 +33,9 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
             OffsetDateTime now2
     );
 
+    // Sjekk om et game har aktive eller fremtidige reservasjoner
+    boolean existsByGameIdAndEndsAtAfter(Long gameId, OffsetDateTime now);
+
     // Alle aktive reservasjoner (started men ikke sluttet)
     List<Reservation> findByStartedAtIsNotNullAndEndsAtIsNull();
 }
