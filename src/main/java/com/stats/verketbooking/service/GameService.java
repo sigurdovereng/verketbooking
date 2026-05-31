@@ -4,6 +4,7 @@ import com.stats.verketbooking.model.Game;
 import com.stats.verketbooking.repository.GameRepo;
 import com.stats.verketbooking.repository.ReservationRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -48,10 +49,12 @@ public class GameService {
         return gameRepo.save(game);
     }
 
+    @Transactional
     public void deleteGame(Long id) {
-        Game game = gameRepo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Game not found: " + id));
-        reservationRepo.deleteByGame(game);
+        if (!gameRepo.existsById(id)) {
+            throw new IllegalArgumentException("Game not found: " + id);
+        }
+        reservationRepo.deleteByGameId(id);
         gameRepo.deleteById(id);
     }
 }
