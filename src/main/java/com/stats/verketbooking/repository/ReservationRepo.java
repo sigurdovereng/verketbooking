@@ -12,6 +12,8 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
     // Alle reservasjoner for et bestemt game
     List<Reservation> findByGame(Game game);
 
+    void deleteByGame(Game game);
+
     // Alle reservasjoner for et game etter et tidspunkt
     List<Reservation> findByGameAndEndsAtAfter(Game game, OffsetDateTime now);
 
