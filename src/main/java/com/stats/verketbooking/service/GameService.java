@@ -44,6 +44,19 @@ public class GameService {
         return gameRepo.save(game);
     }
 
+    public Game renameGame(Long id, String newName) {
+        if (newName == null || newName.isBlank()) {
+            throw new IllegalArgumentException("Game name cannot be empty");
+        }
+        String trimmed = newName.trim();
+        if (gameRepo.existsByName(trimmed)) {
+            throw new IllegalArgumentException("Game already exists: " + trimmed);
+        }
+        Game game = getGameById(id);
+        game.setName(trimmed);
+        return gameRepo.save(game);
+    }
+
     public Game setActive(Long id, boolean active) {
         Game game = getGameById(id);
         game.setActive(active);
