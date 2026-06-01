@@ -41,7 +41,7 @@ export default function Dashboard({ authHeader, onLogout }) {
   const fetchGames = useCallback(() => {
     fetch(`${API_BASE}/games`, { headers })
       .then((r) => r.json())
-      .then(setGames)
+      .then((data) => setGames(data.sort((a, b) => a.id - b.id)))
       .catch(() => {});
   }, [headers]);
 
