@@ -112,12 +112,38 @@ export default function Dashboard({ authHeader, onLogout }) {
   }
   
   function handleRenameGame(gameId, newName) {
-  setGames((prev) =>
-    prev.map((g) => (g.id === gameId ? { ...g, name: newName } : g))
-  );
-  setSelectedGame((prev) =>
-    prev?.id === gameId ? { ...prev, name: newName } : prev
-  );
+    const oldName = games.find((g) => g.id === gameId)?.name;
+    setGames((prev) =>
+      prev.map((g) => (g.id === gameId ? { ...g, name: newName } : g))
+    );
+    setSelectedGame((prev) =>
+      prev?.id === gameId ? { ...prev, name: newName } : prev
+    );
+    fetch(`${API_BASE}/games/${gameId}`, {
+      method: "PATCH",
+      headers,
+      body: JSON.stringify({ name: newName }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          setGames((prev) =>
+            prev.map((g) => (g.id === gameId ? { ...g, name: oldName } : g))
+          );
+          setSelectedGame((prev) =>
+            prev?.id === gameId ? { ...prev, name: oldName } : prev
+          );
+          toast("Kunne ikke endre navn", "error");
+        }
+      })
+      .catch(() => {
+        setGames((prev) =>
+          prev.map((g) => (g.id === gameId ? { ...g, name: oldName } : g))
+        );
+        setSelectedGame((prev) =>
+          prev?.id === gameId ? { ...prev, name: oldName } : prev
+        );
+        toast("Kunne ikke endre navn", "error");
+      });
   }
 
   async function handleAddReservation(formData) {
