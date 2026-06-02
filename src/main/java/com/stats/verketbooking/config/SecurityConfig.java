@@ -58,7 +58,7 @@ public class SecurityConfig {
                 "https://vaerketbooking.onrender.com",
                 "https://verketbooking-lcvf.onrender.com"
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT","OPTIONS"));
+        config.setAllowedMethods(List.of("GET", "POST", "DELETE", "PUT", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
 

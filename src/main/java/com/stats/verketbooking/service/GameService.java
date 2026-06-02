@@ -2,17 +2,22 @@ package com.stats.verketbooking.service;
 
 import com.stats.verketbooking.model.Game;
 import com.stats.verketbooking.repository.GameRepo;
+import com.stats.verketbooking.repository.ReservationRepo;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
 public class GameService {
 
     private final GameRepo gameRepo;
+    private final ReservationRepo reservationRepo;
 
-    public GameService(GameRepo gameRepo) {
+    public GameService(GameRepo gameRepo, ReservationRepo reservationRepo) {
         this.gameRepo = gameRepo;
+        this.reservationRepo = reservationRepo;
     }
 
     public List<Game> getAllGames() {
@@ -39,16 +44,34 @@ public class GameService {
         return gameRepo.save(game);
     }
 
+    public Game renameGame(Long id, String newName) {
+        if (newName == null || newName.isBlank()) {
+            throw new IllegalArgumentException("Game name cannot be empty");
+        }
+        String trimmed = newName.trim();
+        if (gameRepo.existsByName(trimmed)) {
+            throw new IllegalArgumentException("Game already exists: " + trimmed);
+        }
+        Game game = getGameById(id);
+        game.setName(trimmed);
+        return gameRepo.save(game);
+    }
+
     public Game setActive(Long id, boolean active) {
         Game game = getGameById(id);
         game.setActive(active);
         return gameRepo.save(game);
     }
 
+    @Transactional
     public void deleteGame(Long id) {
         if (!gameRepo.existsById(id)) {
             throw new IllegalArgumentException("Game not found: " + id);
         }
+        if (reservationRepo.existsByGameIdAndEndsAtAfter(id, OffsetDateTime.now())) {
+            throw new IllegalStateException("Kan ikke slette spill med aktive eller kommende reservasjoner");
+        }
+        reservationRepo.deleteByGameId(id);
         gameRepo.deleteById(id);
     }
 }
