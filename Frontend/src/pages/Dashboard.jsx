@@ -41,7 +41,7 @@ export default function Dashboard({ authHeader, onLogout }) {
   const fetchGames = useCallback(() => {
     fetch(`${API_BASE}/games`, { headers })
       .then((r) => r.json())
-      .then(setGames)
+      .then((data) => setGames(data.sort((a, b) => a.id - b.id)))
       .catch(() => {});
   }, [headers]);
 
@@ -98,7 +98,11 @@ export default function Dashboard({ authHeader, onLogout }) {
   function handleDeleteGame(gameId) {
     const game = games.find((g) => g.id === gameId);
     fetch(`${API_BASE}/games/${gameId}`, { method: "DELETE", headers })
-      .then(() => {
+      .then((res) => {
+        if (!res.ok) {
+          toast("Kan ikke slette spill med aktive eller kommende reservasjoner", "error");
+          return;
+        }
         setSelectedGame(null);
         fetchGames();
         fetchReservations();
@@ -108,12 +112,38 @@ export default function Dashboard({ authHeader, onLogout }) {
   }
   
   function handleRenameGame(gameId, newName) {
-  setGames((prev) =>
-    prev.map((g) => (g.id === gameId ? { ...g, name: newName } : g))
-  );
-  setSelectedGame((prev) =>
-    prev?.id === gameId ? { ...prev, name: newName } : prev
-  );
+    const oldName = games.find((g) => g.id === gameId)?.name;
+    setGames((prev) =>
+      prev.map((g) => (g.id === gameId ? { ...g, name: newName } : g))
+    );
+    setSelectedGame((prev) =>
+      prev?.id === gameId ? { ...prev, name: newName } : prev
+    );
+    fetch(`${API_BASE}/games/${gameId}`, {
+      method: "PATCH",
+      headers,
+      body: JSON.stringify({ name: newName }),
+    })
+      .then((res) => {
+        if (!res.ok) {
+          setGames((prev) =>
+            prev.map((g) => (g.id === gameId ? { ...g, name: oldName } : g))
+          );
+          setSelectedGame((prev) =>
+            prev?.id === gameId ? { ...prev, name: oldName } : prev
+          );
+          toast("Kunne ikke endre navn", "error");
+        }
+      })
+      .catch(() => {
+        setGames((prev) =>
+          prev.map((g) => (g.id === gameId ? { ...g, name: oldName } : g))
+        );
+        setSelectedGame((prev) =>
+          prev?.id === gameId ? { ...prev, name: oldName } : prev
+        );
+        toast("Kunne ikke endre navn", "error");
+      });
   }
 
   async function handleAddReservation(formData) {

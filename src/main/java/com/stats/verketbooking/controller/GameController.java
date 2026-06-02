@@ -1,6 +1,7 @@
 package com.stats.verketbooking.controller;
 
 import com.stats.verketbooking.dto.GameCreateDto;
+import com.stats.verketbooking.dto.GameRenameDto;
 import com.stats.verketbooking.model.Game;
 import com.stats.verketbooking.service.GameService;
 import jakarta.validation.Valid;
@@ -26,6 +27,11 @@ public class GameController {
     @PostMapping
     public Game create(@Valid @RequestBody GameCreateDto dto) {
         return gameService.createGame(dto.name());
+    }
+
+    @PatchMapping("/{id}")
+    public Game rename(@PathVariable Long id, @Valid @RequestBody GameRenameDto dto) {
+        return gameService.renameGame(id, dto.name());
     }
 
     @DeleteMapping("/{id}")

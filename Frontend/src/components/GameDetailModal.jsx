@@ -9,6 +9,14 @@ function formatTime(isoString) {
   });
 }
 
+function formatDate(isoString) {
+  if (!isoString) return "";
+  return new Date(isoString).toLocaleDateString("no-NO", {
+    day: "numeric",
+    month: "short",
+  });
+}
+
 export default function GameDetailModal({
   game,
   reservations,
@@ -22,6 +30,7 @@ export default function GameDetailModal({
   const now = new Date();
   const [editing, setEditing] = useState(false);
   const [nameInput, setNameInput] = useState(game.name);
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -90,7 +99,7 @@ export default function GameDetailModal({
             </button>
           </div>
 
-          <h3 className="reservations-heading">Reservasjoner i dag</h3>
+          <h3 className="reservations-heading">Reservasjoner</h3>
 
           {reservations.length === 0 ? (
             <p className="no-reservations">Ingen reservasjoner</p>
@@ -109,7 +118,8 @@ export default function GameDetailModal({
                       <span className="reservation-name">{r.name}</span>
                       <span className="reservation-phone">{r.phoneNumber}</span>
                       <span className="reservation-time">
-                        {formatTime(r.startedAt)} – {formatTime(r.endsAt)}
+                        <span className="reservation-date">{formatDate(r.startedAt)}</span>
+                        {" "}{formatTime(r.startedAt)} – {formatTime(r.endsAt)}
                       </span>
                       {isActive && <span className="now-label">Nå</span>}
                     </div>
@@ -128,9 +138,23 @@ export default function GameDetailModal({
         </div>
 
         <div className="detail-footer">
-          <button className="delete-game-btn" onClick={onDeleteGame}>
-            Slett spill
-          </button>
+          {confirmDelete ? (
+            <div className="delete-confirm">
+              <span className="delete-confirm-text">Er du sikker på at du vil slette spillet?</span>
+              <div className="delete-confirm-actions">
+                <button className="delete-confirm-yes" onClick={onDeleteGame}>
+                  Ja, slett
+                </button>
+                <button className="delete-confirm-no" onClick={() => setConfirmDelete(false)}>
+                  Avbryt
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button className="delete-game-btn" onClick={() => setConfirmDelete(true)}>
+              Slett spill
+            </button>
+          )}
         </div>
       </div>
     </div>
