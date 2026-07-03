@@ -1,4 +1,10 @@
 HELP.md
+
+### Local/system files ###
+.DS_Store
+**/.DS_Store
+.claude/
+
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
