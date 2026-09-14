@@ -95,14 +95,7 @@ export default function TimePicker({ value, onChange }) {
   const [pendingH, setPendingH] = useState(initH);
   const [pendingM, setPendingM] = useState(initM);
 
-  useEffect(() => {
-    if (!value) {
-      const [dh, dm] = defaultTime();
-      onChange(`${pad(dh)}:${pad(dm)}`);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
+  // Synkroniser med value fra parent
   useEffect(() => {
     if (!value) return;
 
@@ -111,32 +104,35 @@ export default function TimePicker({ value, onChange }) {
     setPendingM(m);
   }, [value]);
 
-  function confirm() {
-    onChange(`${pad(pendingH)}:${pad(pendingM)}`);
-  }
+  // Oppdater parent automatisk når hjulet stopper på ny verdi
+  useEffect(() => {
+    const newValue = `${pad(pendingH)}:${pad(pendingM)}`;
 
-  const confirmed = value === `${pad(pendingH)}:${pad(pendingM)}`;
+    if (newValue !== value) {
+      onChange(newValue);
+    }
+  }, [pendingH, pendingM, value, onChange]);
 
   return (
       <div className="time-picker-wrapper">
         <div className="time-picker">
-          <WheelCol items={HOURS} value={pendingH} onChange={setPendingH} />
+          <WheelCol
+              items={HOURS}
+              value={pendingH}
+              onChange={setPendingH}
+          />
+
           <div className="wheel-colon">:</div>
-          <WheelCol items={MINUTES} value={pendingM} onChange={setPendingM} />
+
+          <WheelCol
+              items={MINUTES}
+              value={pendingM}
+              onChange={setPendingM}
+          />
+
           <div className="wheel-fade" aria-hidden="true" />
           <div className="wheel-sel-band" aria-hidden="true" />
         </div>
-
-        <button
-            type="button"
-            className={`time-confirm-btn${confirmed ? " confirmed" : ""}`}
-            onClick={confirm}
-            touchAction="manipulation"
-        >
-          {confirmed
-              ? `✓ Valgt: ${pad(pendingH)}:${pad(pendingM)}`
-              : `Velg ${pad(pendingH)}:${pad(pendingM)}`}
-        </button>
       </div>
   );
 }
