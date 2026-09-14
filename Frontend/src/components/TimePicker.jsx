@@ -97,9 +97,31 @@ function WheelCol({ items, value, onChange }) {
   );
 }
 
+function defaultTime() {
+  const now = new Date();
+  const h = now.getHours();
+  const rawM = now.getMinutes();
+  const m = Math.ceil(rawM / 5) * 5;
+
+  return m >= 60
+      ? [(h + 1) % 24, 0]
+      : [h, m];
+}
+
+function defaultTime() {
+  const now = new Date();
+  const h = now.getHours();
+  const rawM = now.getMinutes();
+  const m = Math.ceil(rawM / 5) * 5;
+
+  return m >= 60
+      ? [(h + 1) % 24, 0]
+      : [h, m];
+}
+
 function parseValue(value) {
   if (!value) {
-    return [0, 0];
+    return defaultTime();
   }
 
   const [hStr, mStr] = value.split(":");
@@ -108,7 +130,7 @@ function parseValue(value) {
   const m = parseInt(mStr, 10);
 
   if (isNaN(h) || isNaN(m)) {
-    return [0, 0];
+    return defaultTime();
   }
 
   return [h, m];
