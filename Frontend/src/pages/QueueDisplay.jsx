@@ -28,25 +28,22 @@ function QueueDisplay() {
 
     async function fetchQueueData() {
       try {
-        const [queueResponse, gamesResponse] = await Promise.all([
-          fetch(`${API_BASE}/display/queue`),
-          fetch(`${API_BASE}/display/games`),
-        ]);
+        const response = await fetch(`${API_BASE}/display/queue`);
 
-        if (!queueResponse.ok || !gamesResponse.ok) {
+        if (!response.ok) {
           throw new Error("Kunne ikke hente køstatus.");
         }
 
-        const queue = await queueResponse.json();
-        const games = await gamesResponse.json();
+        const data = await response.json();
 
         if (!isActive) return;
 
         setQueueData({
-          activeGames: Array.isArray(queue.activeGames) ? queue.activeGames : [],
-          waitingQueue: Array.isArray(queue.waitingQueue) ? queue.waitingQueue : [],
-          games: Array.isArray(games) ? games : [],
+          activeGames: Array.isArray(data.activeGames) ? data.activeGames : [],
+          waitingQueue: Array.isArray(data.waitingQueue) ? data.waitingQueue : [],
+          games: Array.isArray(data.games) ? data.games : [],
         });
+
         setLastUpdated(new Date());
         setError(null);
       } catch {
