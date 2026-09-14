@@ -28,13 +28,21 @@ function formatTime(date) {
 
 function roundUpToNextFiveMinutes(date) {
   const rounded = new Date(date);
+
+  const hadSeconds =
+      rounded.getSeconds() > 0 ||
+      rounded.getMilliseconds() > 0;
+
   rounded.setSeconds(0, 0);
 
-  const minutes = rounded.getMinutes();
-  const remainder = minutes % 5;
+  const remainder = rounded.getMinutes() % 5;
 
   if (remainder !== 0) {
-    rounded.setMinutes(minutes + (5 - remainder));
+    rounded.setMinutes(
+        rounded.getMinutes() + (5 - remainder)
+    );
+  } else if (hadSeconds) {
+    rounded.setMinutes(rounded.getMinutes() + 5);
   }
 
   return rounded;
@@ -105,13 +113,28 @@ export default function AddReservationModal({
   onClose,
   onSubmit,
 }) {
+  const initialGameId = selectedGame?.id || games[0]?.id || "";
+
+  const initialNextAvailable = getNextAvailableTime(
+      initialGameId,
+      reservations || []
+  );
+
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("+47");
-  const [gameId, setGameId] = useState(selectedGame?.id || games[0]?.id || "");
-  const [reservationDate, setReservationDate] = useState(getTodayDateString());
-  const [startTime, setStartTime] = useState("");
+  const [gameId, setGameId] = useState(initialGameId);
+
+  const [reservationDate, setReservationDate] = useState(
+      formatDate(initialNextAvailable)
+  );
+
+  const [startTime, setStartTime] = useState(
+      formatTime(initialNextAvailable)
+  );
+
   const [durationMin, setDurationMin] = useState(60);
   const [error, setError] = useState(null);
+
 
   useEffect(() => {
     if (!gameId) return;
