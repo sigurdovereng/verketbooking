@@ -190,6 +190,9 @@ function QueueDisplay() {
 
   const displayCount = displayItems.length;
 
+  const densityClass =
+      displayCount >= 9 ? "is-tight" : displayCount >= 6 ? "is-dense" : "";
+
   return (
     <div className={`queue-display ${densityClass}`}>
       <header className="queue-header">
