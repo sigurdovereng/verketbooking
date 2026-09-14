@@ -171,7 +171,6 @@
   grid-template-columns: minmax(0, 1fr) minmax(250px, 0.42fr) minmax(118px, auto);
   align-items: center;
   gap: clamp(6px, 1vh, 10px) clamp(18px, 2.8vw, 38px);
-  animation: pulse-queue-card 2.5s ease-in-out infinite;
   overflow: hidden;
 }
 
@@ -206,14 +205,6 @@
   animation: none;
 }
 
-@keyframes pulse-queue-card {
-  0%, 100% {
-    box-shadow: 0 0 0 1px var(--amber-border), 0 4px 16px var(--amber-glow);
-  }
-  50% {
-    box-shadow: 0 0 0 1px var(--amber), 0 4px 28px rgba(240, 184, 51, 0.16);
-  }
-}
 
 .reservation-main {
   min-width: 0;
@@ -393,9 +384,7 @@
 }
 
 .queue-display.is-dense .reservation-main p,
-.queue-display.is-tight .reservation-main p,
-.queue-display.is-dense .next-reservation-label,
-.queue-display.is-tight .next-reservation-label {
+.queue-display.is-tight .reservation-main p {
   display: none;
 }
 
