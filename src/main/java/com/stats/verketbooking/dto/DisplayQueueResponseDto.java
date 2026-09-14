@@ -4,5 +4,6 @@ import java.util.List;
 
 public record DisplayQueueResponseDto(
         List<DisplayQueueEntryDto> activeGames,
-        List<DisplayQueueEntryDto> waitingQueue
+        List<DisplayQueueEntryDto> waitingQueue,
+        List<DisplayGameDto> games
 ) {}

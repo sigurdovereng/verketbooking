@@ -3,6 +3,7 @@ package com.stats.verketbooking.service;
 import com.stats.verketbooking.dto.DisplayQueueResponseDto;
 import com.stats.verketbooking.model.Game;
 import com.stats.verketbooking.model.Reservation;
+import com.stats.verketbooking.repository.GameRepo;
 import com.stats.verketbooking.repository.ReservationRepo;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +59,19 @@ class DisplayServiceTest {
         ReservationRepo reservationRepo = reservationRepoReturning(
                 List.of(activeReservation, waitingReservation, cancelledReservation)
         );
-        DisplayService displayService = new DisplayService(reservationRepo);
+
+        GameRepo gameRepo = (GameRepo) Proxy.newProxyInstance(
+                GameRepo.class.getClassLoader(),
+                new Class[]{GameRepo.class},
+                (proxy, method, args) -> {
+                    if (method.getName().equals("findAll")) {
+                        return List.of(shuffleboard);
+                    }
+                    return null;
+                }
+        );
+
+        DisplayService displayService = new DisplayService(reservationRepo, gameRepo);
 
         DisplayQueueResponseDto response = displayService.getQueueDisplay();
 

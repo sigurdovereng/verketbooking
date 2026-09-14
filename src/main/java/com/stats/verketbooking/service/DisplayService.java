@@ -1,5 +1,8 @@
 package com.stats.verketbooking.service;
 
+import com.stats.verketbooking.dto.DisplayGameDto;
+import com.stats.verketbooking.model.Game;
+import com.stats.verketbooking.repository.GameRepo;
 import com.stats.verketbooking.dto.DisplayQueueEntryDto;
 import com.stats.verketbooking.dto.DisplayQueueResponseDto;
 import com.stats.verketbooking.model.Reservation;
@@ -19,13 +22,23 @@ public class DisplayService {
     private static final Set<String> HIDDEN_STATUSES = Set.of("DONE", "NO_SHOW", "CANCELLED");
 
     private final ReservationRepo reservationRepo;
+    private final GameRepo gameRepo;
 
-    public DisplayService(ReservationRepo reservationRepo) {
+    public DisplayService(ReservationRepo reservationRepo,  GameRepo gameRepo) {
         this.reservationRepo = reservationRepo;
+        this.gameRepo = gameRepo;
     }
 
     public DisplayQueueResponseDto getQueueDisplay() {
         OffsetDateTime now = OffsetDateTime.now();
+
+        List<DisplayGameDto> games = gameRepo.findAll().stream()
+                .sorted(Comparator.comparing(Game::getId))
+                .map(game -> new DisplayGameDto(
+                        game.getId(),
+                        game.getName()
+                ))
+                .toList();
 
         List<Reservation> reservations = reservationRepo.findByEndsAtGreaterThanEqualOrderByStartedAtAsc(now).stream()
                 .filter(this::hasDisplayData)
@@ -51,7 +64,7 @@ public class DisplayService {
                 .mapToObj(index -> toEntry(waitingReservations.get(index), "NEXT_UP", index + 1))
                 .toList();
 
-        return new DisplayQueueResponseDto(activeGames, waitingQueue);
+        return new DisplayQueueResponseDto(activeGames, waitingQueue, games);
     }
 
     private boolean hasDisplayData(Reservation reservation) {

@@ -10,4 +10,5 @@ public interface GameRepo extends JpaRepository<Game, Long> {
     Optional<Game> findByName(String name);
 
     boolean existsByName(String name);
+
 }
