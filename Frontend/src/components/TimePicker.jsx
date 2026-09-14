@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect } from "react";
 import "../styles/timepicker.css";
 
 const ITEM_H = 56;
@@ -14,41 +14,35 @@ const MINUTES = Array.from({ length: 12 }, (_, i) => i * 5);
 function WheelCol({ items, value, onChange }) {
   const ref = useRef(null);
   const snapTimer = useRef(null);
-  const isUserScrolling = useRef(false);
+  const userScrolling = useRef(false);
 
   useEffect(() => {
-    const i = items.indexOf(value);
+    const index = items.indexOf(value);
 
-    if (ref.current && i >= 0) {
-      ref.current.scrollTop = i * ITEM_H;
-    }
-  }, []);
-
-  useEffect(() => {
-    if (isUserScrolling.current) return;
-
-    const i = items.indexOf(value);
-
-    if (ref.current && i >= 0) {
-      ref.current.scrollTo({
-        top: i * ITEM_H,
-        behavior: "smooth",
-      });
+    if (ref.current && index >= 0) {
+      // Ikke smooth her. Dette er kun synkronisering fra parent.
+      ref.current.scrollTop = index * ITEM_H;
     }
   }, [value, items]);
 
+  function startUserScroll() {
+    userScrolling.current = true;
+  }
+
   function handleScroll() {
-    isUserScrolling.current = true;
+    // Ignorer scrolling som skyldes at React flytter hjulet
+    if (!userScrolling.current) return;
 
     clearTimeout(snapTimer.current);
 
     snapTimer.current = setTimeout(() => {
-      isUserScrolling.current = false;
-
       if (!ref.current) return;
 
-      const i = Math.round(ref.current.scrollTop / ITEM_H);
-      const clamped = Math.max(0, Math.min(items.length - 1, i));
+      const index = Math.round(ref.current.scrollTop / ITEM_H);
+      const clamped = Math.max(
+          0,
+          Math.min(items.length - 1, index)
+      );
 
       ref.current.scrollTo({
         top: clamped * ITEM_H,
@@ -56,12 +50,16 @@ function WheelCol({ items, value, onChange }) {
       });
 
       onChange(items[clamped]);
-    }, 80);
+
+      userScrolling.current = false;
+    }, 100);
   }
 
-  function handleClick(item, i) {
+  function handleClick(item, index) {
+    userScrolling.current = false;
+
     ref.current?.scrollTo({
-      top: i * ITEM_H,
+      top: index * ITEM_H,
       behavior: "smooth",
     });
 
@@ -74,6 +72,9 @@ function WheelCol({ items, value, onChange }) {
             className="wheel-scroller"
             ref={ref}
             onScroll={handleScroll}
+            onTouchStart={startUserScroll}
+            onMouseDown={startUserScroll}
+            onWheel={startUserScroll}
         >
           {Array.from({ length: PAD }, (_, i) => (
               <div key={`t${i}`} className="wheel-pad" />
@@ -97,85 +98,61 @@ function WheelCol({ items, value, onChange }) {
   );
 }
 
-function defaultTime() {
+function roundCurrentTime() {
   const now = new Date();
-  const h = now.getHours();
-  const rawM = now.getMinutes();
-  const m = Math.ceil(rawM / 5) * 5;
 
-  return m >= 60
-      ? [(h + 1) % 24, 0]
-      : [h, m];
-}
+  let hours = now.getHours();
+  let minutes = Math.ceil(now.getMinutes() / 5) * 5;
 
-function defaultTime() {
-  const now = new Date();
-  const h = now.getHours();
-  const rawM = now.getMinutes();
-  const m = Math.ceil(rawM / 5) * 5;
+  if (minutes >= 60) {
+    minutes = 0;
+    hours = (hours + 1) % 24;
+  }
 
-  return m >= 60
-      ? [(h + 1) % 24, 0]
-      : [h, m];
+  return [hours, minutes];
 }
 
 function parseValue(value) {
   if (!value) {
-    return defaultTime();
+    return roundCurrentTime();
   }
 
-  const [hStr, mStr] = value.split(":");
+  const [hourText, minuteText] = value.split(":");
 
-  const h = parseInt(hStr, 10);
-  const m = parseInt(mStr, 10);
+  const hours = Number(hourText);
+  const minutes = Number(minuteText);
 
-  if (isNaN(h) || isNaN(m)) {
-    return defaultTime();
+  if (
+      Number.isNaN(hours) ||
+      Number.isNaN(minutes) ||
+      hours < 0 ||
+      hours > 23 ||
+      minutes < 0 ||
+      minutes > 59
+  ) {
+    return roundCurrentTime();
   }
 
-  return [h, m];
+  return [hours, minutes];
 }
 
 export default function TimePicker({ value, onChange }) {
-  const [initH, initM] = parseValue(value);
+  const [hours, minutes] = parseValue(value);
 
-  const [pendingH, setPendingH] = useState(initH);
-  const [pendingM, setPendingM] = useState(initM);
-
-  // Hvis AddReservationModal bestemmer et nytt tidspunkt,
-  // synkroniser skrollehjulet med dette.
-  useEffect(() => {
-    if (!value) return;
-
-    const [h, m] = parseValue(value);
-
-    setPendingH(h);
-    setPendingM(m);
-  }, [value]);
-
-  function handleHourChange(hour) {
-    setPendingH(hour);
-
-    onChange(
-        `${pad(hour)}:${pad(pendingM)}`
-    );
+  function handleHourChange(newHour) {
+    onChange(`${pad(newHour)}:${pad(minutes)}`);
   }
 
-  function handleMinuteChange(minute) {
-    setPendingM(minute);
-
-    onChange(
-        `${pad(pendingH)}:${pad(minute)}`
-    );
+  function handleMinuteChange(newMinute) {
+    onChange(`${pad(hours)}:${pad(newMinute)}`);
   }
 
   return (
       <div className="time-picker-wrapper">
         <div className="time-picker">
-
           <WheelCol
               items={HOURS}
-              value={pendingH}
+              value={hours}
               onChange={handleHourChange}
           />
 
@@ -183,20 +160,12 @@ export default function TimePicker({ value, onChange }) {
 
           <WheelCol
               items={MINUTES}
-              value={pendingM}
+              value={minutes}
               onChange={handleMinuteChange}
           />
 
-          <div
-              className="wheel-fade"
-              aria-hidden="true"
-          />
-
-          <div
-              className="wheel-sel-band"
-              aria-hidden="true"
-          />
-
+          <div className="wheel-fade" aria-hidden="true" />
+          <div className="wheel-sel-band" aria-hidden="true" />
         </div>
       </div>
   );
