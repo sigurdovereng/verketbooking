@@ -25,14 +25,21 @@ public class ReservationService {
     }
 
     public Reservation save(Reservation reservation) {
+        var bufferedStart = reservation.getStartedAt().minusMinutes(5);
+        var bufferedEnd = reservation.getEndsAt().plusMinutes(5);
+
         boolean overlaps = reservationRepo.existsByGameAndStartedAtBeforeAndEndsAtAfter(
                 reservation.getGame(),
-                reservation.getEndsAt(),
-                reservation.getStartedAt()
+                bufferedEnd,
+                bufferedStart
         );
+
         if (overlaps) {
-            throw new IllegalStateException("Tidspunktet er allerede opptatt for dette spillet.");
+            throw new IllegalStateException(
+                    "Tidspunktet er opptatt, eller det er mindre enn 5 minutter mellom reservasjonene."
+            );
         }
+
         return reservationRepo.save(reservation);
     }
 
