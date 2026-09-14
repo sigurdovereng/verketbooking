@@ -8,6 +8,7 @@ function QueueDisplay() {
   const [queueData, setQueueData] = useState({
     activeGames: [],
     waitingQueue: [],
+    games: [],
   });
   const [currentTime, setCurrentTime] = useState(new Date());
   const [lastUpdated, setLastUpdated] = useState(null);
@@ -27,19 +28,24 @@ function QueueDisplay() {
 
     async function fetchQueueData() {
       try {
-        const response = await fetch(`${API_BASE}/display/queue`);
+        const [queueResponse, gamesResponse] = await Promise.all([
+          fetch(`${API_BASE}/display/queue`),
+          fetch(`${API_BASE}/display/games`),
+        ]);
 
-        if (!response.ok) {
+        if (!queueResponse.ok || !gamesResponse.ok) {
           throw new Error("Kunne ikke hente køstatus.");
         }
 
-        const data = await response.json();
+        const queue = await queueResponse.json();
+        const games = await gamesResponse.json();
 
         if (!isActive) return;
 
         setQueueData({
-          activeGames: Array.isArray(data.activeGames) ? data.activeGames : [],
-          waitingQueue: Array.isArray(data.waitingQueue) ? data.waitingQueue : [],
+          activeGames: Array.isArray(queue.activeGames) ? queue.activeGames : [],
+          waitingQueue: Array.isArray(queue.waitingQueue) ? queue.waitingQueue : [],
+          games: Array.isArray(games) ? games : [],
         });
         setLastUpdated(new Date());
         setError(null);
@@ -151,22 +157,38 @@ function QueueDisplay() {
 
   const activeGames = queueData.activeGames;
   const waitingQueue = queueData.waitingQueue;
-  const activeGameIds = new Set(activeGames.map((item) => item.gameId));
-  const upcomingOnlyGames = waitingQueue.filter(
-    (item, index, queue) =>
-      !activeGameIds.has(item.gameId) &&
-      queue.findIndex((candidate) => candidate.gameId === item.gameId) === index
-  );
-  const displayItems = [
-    ...activeGames.map((item) => ({ type: "active", reservation: item })),
-    ...upcomingOnlyGames.map((item) => ({ type: "upcoming", reservation: item })),
-  ].sort((a, b) => {
-    if (a.type !== b.type) return a.type === "active" ? -1 : 1;
-    return new Date(a.reservation.startTime) - new Date(b.reservation.startTime);
-  });
+  const games = queueData.games;
+
+  const displayItems = games
+      .map((game) => {
+        const activeReservation =
+            activeGames.find((item) => item.gameId === game.id) || null;
+
+        const nextReservation =
+            waitingQueue
+                .filter((item) => item.gameId === game.id)
+                .sort(
+                    (a, b) =>
+                        new Date(a.startTime).getTime() -
+                        new Date(b.startTime).getTime()
+                )[0] || null;
+
+        return {
+          game,
+          activeReservation,
+          nextReservation,
+          isActive: !!activeReservation,
+        };
+      })
+      .sort((a, b) => {
+        if (a.isActive !== b.isActive) {
+          return a.isActive ? -1 : 1;
+        }
+
+        return a.game.id - b.game.id;
+      });
+
   const displayCount = displayItems.length;
-  const densityClass =
-    displayCount >= 9 ? "is-tight" : displayCount >= 6 ? "is-dense" : "";
 
   return (
     <div className={`queue-display ${densityClass}`}>
@@ -196,7 +218,7 @@ function QueueDisplay() {
         <div className="section-title-row">
           <h2>Aktive og kommende reservasjoner</h2>
           <span className="section-count">
-            {activeGames.length} aktive / {upcomingOnlyGames.length} kommende
+            {activeGames.length} aktive / {games.length - activeGames.length} ledige
           </span>
         </div>
 
@@ -211,73 +233,73 @@ function QueueDisplay() {
               Ingen aktive eller kommende reservasjoner akkurat nå.
             </p>
           ) : (
-            displayItems.map(({ type, reservation: item }) => {
-              const isActive = type === "active";
-              const timeLeft = getTimeLeft(item.endTime);
-              const startsIn = getMinutesUntil(item.startTime);
-              const progress = isActive
-                ? getProgressPercent(item.startTime, item.endTime)
-                : 0;
-              const nextReservation = isActive
-                ? getNextReservationForGame(item.gameId)
-                : item;
+              displayItems.map(
+                  ({ game, activeReservation, nextReservation, isActive }) => {
+                    const item = activeReservation;
+                    const timeLeft = isActive
+                        ? getTimeLeft(item.endTime)
+                        : null;
+
+                    const progress = isActive
+                        ? getProgressPercent(item.startTime, item.endTime)
+                        : 0;
 
               return (
-                <div className={`active-card ${isActive ? "is-active" : "is-upcoming"}`} key={`${type}-${item.id}`}>
+                <div className={`active-card ${isActive ? "is-active" : "is-available"}`} key={game.id}>
                   <div className="reservation-main">
                     <div className="reservation-title-row">
-                      <h3>{formatGameAndPlayer(item.gameName, item.name)}</h3>
-                      <div className={`status-pill ${isActive ? "live-pill" : "upcoming-pill"}`}>
-                        {isActive ? "LIVE" : "KOMMER"}
+                      <h3>
+                        {isActive
+                            ? formatGameAndPlayer(game.name, activeReservation.name)
+                            : game.name}
+                      </h3>
+                      <div
+                          className={`status-pill ${
+                              isActive ? "live-pill" : "available-pill"
+                          }`}
+                      >
+                        {isActive ? "LIVE" : "LEDIG"}
                       </div>
                     </div>
                     <p>
                       {isActive
-                        ? `${formatTime(item.startTime)} - ${formatTime(item.endTime)}`
-                        : formatStartsIn(startsIn)}
+                          ? `${formatTime(activeReservation.startTime)} - ${formatTime(activeReservation.endTime)}`
+                          : "Ledig nå"}
                     </p>
                   </div>
 
                   <div className="time-row">
-                    <span>{isActive ? "Tid igjen" : "Starter"}</span>
+                    <span>{isActive ? "Tid igjen" : "Status"}</span>
                     <strong>
                       {isActive
-                        ? formatCountdown(timeLeft.minutes, timeLeft.seconds)
-                        : formatTime(item.startTime)}
+                          ? formatCountdown(timeLeft.minutes, timeLeft.seconds)
+                          : "Ledig"}
                     </strong>
                   </div>
 
                   {isActive && (
-                    <div className="progress-bar">
-                      <div
-                        className="progress-fill"
-                        style={{ width: `${progress}%` }}
-                      ></div>
-                    </div>
+                      <div className="progress-bar">
+                        <div
+                            className="progress-fill"
+                            style={{ width: `${progress}%` }}
+                        />
+                      </div>
                   )}
 
                   <div className="next-reservation-box">
-                    <span className="next-reservation-label">
-                      {isActive ? "Neste reservasjon" : "Kommende reservasjon"}
-                    </span>
+                      <span className="next-reservation-label">
+                        Neste reservasjon
+                      </span>
+
                     {nextReservation ? (
-                      <div className="next-reservation-content">
-                        {isActive ? (
-                          <>
-                            <strong>{nextReservation.name}</strong>
-                            <span>{formatTime(nextReservation.startTime)}</span>
-                          </>
-                        ) : (
-                          <strong>
-                            {item.name}
-                            <span>{formatTime(item.startTime)}</span>
-                          </strong>
-                        )}
-                      </div>
+                        <div className="next-reservation-content">
+                          <strong>{nextReservation.name}</strong>
+                          <span>{formatTime(nextReservation.startTime)}</span>
+                        </div>
                     ) : (
-                      <div className="next-reservation-content empty">
-                        <strong>Ingen i kø</strong>
-                      </div>
+                        <div className="next-reservation-content empty">
+                          <strong>Ingen i kø</strong>
+                        </div>
                     )}
                   </div>
                 </div>
