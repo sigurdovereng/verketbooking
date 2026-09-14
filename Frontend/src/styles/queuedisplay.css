@@ -465,12 +465,21 @@
 
 @media (max-width: 900px) {
   .queue-header {
-    padding: 16px 20px;
+    padding: 14px 18px;
     height: auto;
   }
 
+  .queue-header h1 {
+    font-size: 24px;
+    letter-spacing: 5px;
+  }
+
+  .queue-header p {
+    font-size: 12px;
+  }
+
   .queue-section {
-    padding: 16px 20px;
+    padding: 12px 18px;
   }
 
   .queue-status-banner {
@@ -514,6 +523,99 @@
   .progress-bar {
     grid-column: 1 / -1;
     grid-row: 3;
+  }
+  @media (max-width: 900px) {
+    .queue-header {
+      padding: 14px 18px;
+    }
+
+    .queue-header h1 {
+      font-size: 24px;
+      letter-spacing: 5px;
+    }
+
+    .queue-header p {
+      font-size: 12px;
+    }
+
+    .queue-clock-box {
+      font-size: 26px;
+      min-width: 140px;
+    }
+
+    .queue-section {
+      padding: 12px 18px;
+    }
+
+    .section-title-row h2 {
+      font-size: 13px;
+    }
+
+    .section-count {
+      font-size: 13px;
+    }
+
+    .active-list {
+      gap: 8px;
+    }
+
+    .active-card {
+      min-height: 120px;
+      padding: 14px 16px;
+      grid-template-columns: minmax(0, 1fr) minmax(115px, auto);
+      gap: 8px 14px;
+    }
+
+    .reservation-main h3 {
+      font-size: 21px;
+    }
+
+    .reservation-main p {
+      font-size: 13px;
+    }
+
+    .status-pill {
+      font-size: 10px;
+      padding: 4px 8px;
+    }
+
+    .time-row {
+      grid-column: 2;
+      grid-row: 1;
+      min-width: 115px;
+    }
+
+    .time-row span {
+      font-size: 11px;
+    }
+
+    .time-row strong {
+      font-size: 32px;
+    }
+
+    .next-reservation-box {
+      grid-column: 1 / -1;
+      grid-row: 2;
+      flex-direction: row;
+      align-items: baseline;
+      gap: 10px;
+      padding-top: 2px;
+    }
+
+    .next-reservation-label {
+      display: block;
+      font-size: 10px;
+    }
+
+    .next-reservation-content {
+      font-size: 15px;
+    }
+
+    .progress-bar {
+      grid-column: 1 / -1;
+      grid-row: 3;
+      height: 5px;
+    }
   }
 }
 
