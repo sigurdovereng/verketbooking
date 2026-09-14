@@ -18,6 +18,56 @@ function getTodayDateString() {
   return `${pad(today.getDate())}.${pad(today.getMonth() + 1)}.${today.getFullYear()}`;
 }
 
+function formatDate(date) {
+  return `${pad(date.getDate())}.${pad(date.getMonth() + 1)}.${date.getFullYear()}`;
+}
+
+function formatTime(date) {
+  return `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function roundUpToNextFiveMinutes(date) {
+  const rounded = new Date(date);
+  rounded.setSeconds(0, 0);
+
+  const minutes = rounded.getMinutes();
+  const remainder = minutes % 5;
+
+  if (remainder !== 0) {
+    rounded.setMinutes(minutes + (5 - remainder));
+  }
+
+  return rounded;
+}
+
+function getNextAvailableTime(gameId, reservations) {
+  const now = roundUpToNextFiveMinutes(new Date());
+
+  const gameReservations = reservations
+      .filter(
+          (reservation) =>
+              Number(reservation.game?.id ?? reservation.gameId) === Number(gameId) &&
+              reservation.status !== "CANCELLED" &&
+              reservation.status !== "NO_SHOW"
+      )
+      .filter((reservation) => reservation.endsAt)
+      .sort(
+          (a, b) =>
+              new Date(a.endsAt).getTime() - new Date(b.endsAt).getTime()
+      );
+
+  if (gameReservations.length === 0) {
+    return now;
+  }
+
+  const lastReservation = gameReservations[gameReservations.length - 1];
+  const lastEnd = new Date(lastReservation.endsAt);
+
+  const nextAvailable = new Date(lastEnd.getTime() + 5 * 60 * 1000);
+
+  return nextAvailable > now ? nextAvailable : now;
+}
+
 function parseNorwegianDateTime(dateText, timeText) {
   const dateMatch = dateText.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
   const timeMatch = timeText.match(/^([01]\d|2[0-3]):([0-5]\d)$/);
@@ -50,6 +100,7 @@ function parseNorwegianDateTime(dateText, timeText) {
 
 export default function AddReservationModal({
   games,
+    reservations,
   selectedGame,
   onClose,
   onSubmit,
@@ -63,10 +114,13 @@ export default function AddReservationModal({
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (selectedGame?.id) {
-      setGameId(selectedGame.id);
-    }
-  }, [selectedGame]);
+    if (!gameId) return;
+
+    const nextAvailable = getNextAvailableTime(gameId, reservations || []);
+
+    setReservationDate(formatDate(nextAvailable));
+    setStartTime(formatTime(nextAvailable));
+  }, [gameId, reservations]);
 
   async function handleSubmit(e) {
     e.preventDefault();

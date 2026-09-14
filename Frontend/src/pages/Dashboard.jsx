@@ -321,15 +321,16 @@ export default function Dashboard({ authHeader, onLogout }) {
       )}
 
       {modal === "reservation" && (
-        <AddReservationModal
-          games={games}
-          selectedGame={reservationGame}
-          onClose={() => {
-            setModal(null);
-            setReservationGame(null);
-          }}
-          onSubmit={handleAddReservation}
-        />
+          <AddReservationModal
+              games={games}
+              reservations={reservations}
+              selectedGame={reservationGame}
+              onClose={() => {
+                setModal(null);
+                setReservationGame(null);
+              }}
+              onSubmit={handleAddReservation}
+          />
       )}
 
       {selectedGame && (
