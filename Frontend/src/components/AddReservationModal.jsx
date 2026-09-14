@@ -106,7 +106,7 @@ export default function AddReservationModal({
   onSubmit,
 }) {
   const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phone, setPhone] = useState("+47");
   const [gameId, setGameId] = useState(selectedGame?.id || games[0]?.id || "");
   const [reservationDate, setReservationDate] = useState(getTodayDateString());
   const [startTime, setStartTime] = useState("");

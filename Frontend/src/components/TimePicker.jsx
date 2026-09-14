@@ -95,14 +95,21 @@ export default function TimePicker({ value, onChange }) {
   const [pendingH, setPendingH] = useState(initH);
   const [pendingM, setPendingM] = useState(initM);
 
-  // Initialiser parent-state ved første render
   useEffect(() => {
     if (!value) {
       const [dh, dm] = defaultTime();
       onChange(`${pad(dh)}:${pad(dm)}`);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!value) return;
+
+    const [h, m] = parseValue(value);
+    setPendingH(h);
+    setPendingM(m);
+  }, [value]);
 
   function confirm() {
     onChange(`${pad(pendingH)}:${pad(pendingM)}`);
@@ -111,24 +118,25 @@ export default function TimePicker({ value, onChange }) {
   const confirmed = value === `${pad(pendingH)}:${pad(pendingM)}`;
 
   return (
-    <div className="time-picker-wrapper">
-      <div className="time-picker">
-        <WheelCol items={HOURS} value={pendingH} onChange={setPendingH} />
-        <div className="wheel-colon">:</div>
-        <WheelCol items={MINUTES} value={pendingM} onChange={setPendingM} />
-        <div className="wheel-fade" aria-hidden="true" />
-        <div className="wheel-sel-band" aria-hidden="true" />
+      <div className="time-picker-wrapper">
+        <div className="time-picker">
+          <WheelCol items={HOURS} value={pendingH} onChange={setPendingH} />
+          <div className="wheel-colon">:</div>
+          <WheelCol items={MINUTES} value={pendingM} onChange={setPendingM} />
+          <div className="wheel-fade" aria-hidden="true" />
+          <div className="wheel-sel-band" aria-hidden="true" />
+        </div>
+
+        <button
+            type="button"
+            className={`time-confirm-btn${confirmed ? " confirmed" : ""}`}
+            onClick={confirm}
+            touchAction="manipulation"
+        >
+          {confirmed
+              ? `✓ Valgt: ${pad(pendingH)}:${pad(pendingM)}`
+              : `Velg ${pad(pendingH)}:${pad(pendingM)}`}
+        </button>
       </div>
-      <button
-        type="button"
-        className={`time-confirm-btn${confirmed ? " confirmed" : ""}`}
-        onClick={confirm}
-        touch-action="manipulation"
-      >
-        {confirmed
-          ? `✓ Valgt: ${pad(pendingH)}:${pad(pendingM)}`
-          : `Velg ${pad(pendingH)}:${pad(pendingM)}`}
-      </button>
-    </div>
   );
 }
